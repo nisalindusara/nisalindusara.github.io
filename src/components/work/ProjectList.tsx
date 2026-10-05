@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { Project } from "@/content/projects";
 import { workPage } from "@/content/work";
 import { useCursorPreview } from "@/components/CursorPreview/CursorPreview";
+import { usePageReady } from "@/components/transition/TransitionProvider";
 import { EMPTY_FILTERS, matches, type Filters } from "./filters";
 import { ProjectRow } from "./ProjectRow";
 import { WorkFilters } from "./WorkFilters";
@@ -15,12 +16,14 @@ export function ProjectList({ projects }: { projects: Project[] }) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [firstLoad, setFirstLoad] = useState(true);
   const { listProps, rowProps, rowEffect, bubble } = useCursorPreview(projects);
+  const ready = usePageReady();
 
-  // Stagger the rows on the first load only; later filter changes animate together.
+  // Stagger the rows on the first load only (counted from when the page is ready); later filter changes animate together.
   useEffect(() => {
+    if (!ready) return;
     const t = window.setTimeout(() => setFirstLoad(false), 800);
     return () => window.clearTimeout(t);
-  }, []);
+  }, [ready]);
 
   const visible = projects.filter((p) => matches(p, filters));
   const cols = workPage.columns;

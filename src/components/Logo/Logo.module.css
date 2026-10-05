@@ -1,0 +1,25 @@
+.logo {
+  display: block;
+  height: 1em;
+  width: auto;
+  aspect-ratio: 40 / 28;
+  overflow: visible;
+}
+
+.fill {
+  fill: currentColor;
+}
+
+.stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: butt;
+}
+
+.dot {
+  fill: var(--cursor-blue);
+  /* The draw-in springs it from its own centre. */
+  transform-box: fill-box;
+  transform-origin: center;
+}

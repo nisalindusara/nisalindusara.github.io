@@ -1,0 +1,97 @@
+/* Full-screen panel for the intro and page transitions. Timings come from config.ts (inline variables). */
+.panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100dvh;
+  z-index: 1000; /* above the nav (60), menu (70), filter sheet (80) and cursor dot (100) */
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--pad);
+  background: var(--bg);
+  color: var(--text);
+  pointer-events: none;
+}
+
+/* Transition: shown and blocking while TransitionProvider runs it. */
+.panel[data-active] {
+  display: flex;
+  pointer-events: auto;
+}
+
+/* Intro: shown from the first paint (inline script in layout.tsx). Without JavaScript it stays hidden. */
+:global(html[data-intro="pending"]) .panel {
+  display: flex;
+  pointer-events: auto;
+  /* Safety net: hides itself after FAILSAFE_MS even if the script never runs. */
+  animation: panel-failsafe 0s linear var(--failsafe) forwards;
+}
+
+@keyframes panel-failsafe {
+  to {
+    visibility: hidden;
+    pointer-events: none;
+  }
+}
+
+.label {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 0.25em;
+  max-width: 100%;
+  margin: 0;
+  font-family: inherit; /* the site font (Inter, from body) */
+  font-weight: 400;
+  font-size: clamp(32px, 6vw, 88px);
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  text-align: center;
+  color: var(--text);
+}
+
+.word {
+  white-space: nowrap;
+}
+
+/* Waiting: each letter's opacity waves between --loop-min and 1. */
+.letter {
+  display: inline-block;
+}
+
+:global(html[data-intro="pending"]) .letter {
+  animation: panel-wave var(--loop-period) ease-in-out calc(var(--i) * var(--loop-stagger)) infinite;
+}
+
+@keyframes panel-wave {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: var(--loop-min);
+  }
+}
+
+/* Destination label: slides up from behind this mask. Padding keeps descenders inside it. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.text {
+  display: block;
+  transform: translateY(110%);
+}
+
+/* Phones: the name always on two lines ("Nisal" / "Paranawithana"). */
+@media (max-width: 600px) {
+  .label {
+    flex-direction: column;
+    align-items: center;
+  }
+}

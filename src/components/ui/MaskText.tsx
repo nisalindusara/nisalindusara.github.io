@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { EASE_OUT } from "./motion";
+import { useReveal } from "./useReveal";
 
 const slide: Variants = {
   hidden: { y: "110%" },
@@ -11,7 +12,7 @@ const slide: Variants = {
 const tags = { span: motion.span, h2: motion.h2, p: motion.p };
 
 /**
- * Text that slides up from behind a mask when it enters the viewport (once).
+ * Text that slides up from behind a mask when it enters the viewport (once, once the page is ready).
  * The mask (not the hidden text, which is clipped away) is what's watched for visibility.
  */
 export function MaskText({
@@ -26,14 +27,15 @@ export function MaskText({
   id?: string;
 }) {
   const Tag = tags[as];
+  const { ref, play } = useReveal<HTMLParagraphElement & HTMLHeadingElement & HTMLSpanElement>();
   return (
     <Tag
+      ref={ref}
       id={id}
       className={className}
       style={{ display: "block", overflow: "hidden" }}
       initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true }}
+      animate={play ? "visible" : "hidden"}
     >
       <motion.span data-reveal style={{ display: "block" }} variants={slide}>
         {children}

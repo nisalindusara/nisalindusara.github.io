@@ -3,6 +3,7 @@
 import { motion, type Variants } from "framer-motion";
 import { contactLinks, contactSection, profile } from "@/content/profile";
 import { EASE_OUT } from "@/components/ui/motion";
+import { useReveal } from "@/components/ui/useReveal";
 import { Arrow } from "@/components/ui/Arrow";
 import styles from "./Contact.module.css";
 
@@ -24,6 +25,7 @@ function ariaLabel(link: (typeof contactLinks)[number]) {
 
 /** The /contact page content: label and the big stacked links. */
 export function Contact() {
+  const { ref, play } = useReveal<HTMLUListElement>({ amount: 0.3 });
   return (
     <section id="contact" className={styles.contact} aria-labelledby="contact-label">
       <div className={`container ${styles.inner}`}>
@@ -32,11 +34,11 @@ export function Contact() {
         </h1>
 
         <motion.ul
+          ref={ref}
           className={styles.list}
           variants={list}
           initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          animate={play ? "visible" : "hidden"}
         >
           {contactLinks.map((link) => (
             <li key={link.label} className={styles.mask}>

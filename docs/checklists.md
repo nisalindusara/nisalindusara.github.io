@@ -1,6 +1,6 @@
 # Checklists
 
-Use this when: before deploying, after adding a project, or before sending the link to an employer.
+Use this when: before deploying, after changing the intro or transitions, after adding a project, or before sending the link to an employer.
 Time: about 10 minutes per checklist.
 
 ## Before every deploy
@@ -12,6 +12,20 @@ Time: about 10 minutes per checklist.
 - [ ] New image files have lowercase names that match the content paths exactly.
 - [ ] `git status` lists the new or changed files you expect, and nothing else.
 - [ ] `ACTIVE_VIEW` in `src/content/views.ts` is the view you want live.
+
+## Intro and page transitions
+
+Run these after changing anything in `src/components/transition/`, `src/content/transitions.ts`, `src/app/layout.tsx` or a link.
+
+- [ ] First visit: in a private window, the name shows on a dark panel, its letters pulse, then the panel lifts, the letters of the "nisal" wordmark slide up one by one.
+- [ ] Home hero wordmark: moving the mouse across it breaks the letters near the pointer into sideways-shifted bands; they settle back when the mouse stops. The word runs from the left page margin to the right one with no horizontal scrollbar, at 1440px and at 375px.
+- [ ] Refresh: no intro.
+- [ ] New tab (same site, typed address): the intro plays again.
+- [ ] Clicking Work, About, Contact, a project row, "All work", "More about me" and "Next project": the panel rises, shows the right label, and lifts on the new page at its top.
+- [ ] Back and forward buttons: the page switches at once, with no panel.
+- [ ] A link clicked in the open fullscreen menu: the menu is gone when the panel lifts, and the page scrolls.
+- [ ] Reduced motion (F12, Ctrl+Shift+P, "Emulate CSS prefers-reduced-motion", "reduce"): no intro and no panel; links still work.
+- [ ] Phone (375px): the intro name is on two lines and nothing overflows; transitions run from the menu.
 
 ## After adding a project
 

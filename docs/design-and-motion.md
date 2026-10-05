@@ -17,7 +17,7 @@ Global variables are in `src/app/globals.css` under `:root`. Below 768px wide, `
 | `--line` | `src/app/globals.css` | Hairlines on dark pages |
 | `--bg-soft` | `src/app/globals.css` | Footer and fullscreen menu background, image frames on /about/ |
 | `--accent` | `src/app/globals.css` | Blue: cursor dot, nav hover circles, menu circle fill, footer button fill, "Get in touch", menu close button, "View" label on image bubbles |
-| `--cursor-blue` | `src/app/globals.css` | The water ball and its film on rows of projects without a `preview`, and on "Next project" |
+| `--cursor-blue` | `src/app/globals.css` | The dot in the logo, and the blue ball on rows of projects without a `preview` and on "Next project" |
 | `--hero-bg` | `src/app/globals.css` | Light background of the home hero and /work |
 | `--hero-text` | `src/app/globals.css` | Dark text on the home hero and /work, dark nav links there |
 | `--pad` | `src/app/globals.css` | Side padding of the page (40px, 20px below 768px) |
@@ -33,7 +33,7 @@ Global variables are in `src/app/globals.css` under `:root`. Below 768px wide, `
 | `--ink` | `src/components/sections/Contact/Contact.module.css` | Near-black text on /contact/ |
 | `--footer-bg`, `--cta-bg`, `--cta-size` | `src/components/sections/Footer/Footer.module.css` | Footer background, "Get in touch" color and size |
 | `--fill`, `--fill-text` | each element with class `fill-hover` | Hover fill color and text color (global rule in `src/app/globals.css`) |
-| `--name-em` | `src/components/sections/Hero/Hero.module.css` | Size of the hero name (see [Change the first name](#change-the-first-name-in-the-hero)) |
+| `--word-em` | `src/components/sections/Hero/Hero.module.css` | Size of the hero wordmark (see [Change the hero word](#change-the-hero-word)) |
 
 ## Change the palette
 
@@ -52,8 +52,8 @@ The site has three fonts, all set in `src/app/layout.tsx`:
 | Font | Variable | Used for |
 |---|---|---|
 | Inter (Google Fonts, `next/font/google`) | `--font-inter` | All text, set on `body` in `src/app/globals.css` |
+| Urbanist 700 (Google Fonts, `next/font/google`) | `--font-urbanist` | Home hero wordmark (`.wordmark` in `src/components/sections/Hero/Hero.module.css`); after replacing it, re-measure `--word-em` ([Change the hero word](#change-the-hero-word)) |
 | Nimbus Sans (`src/fonts/NimbusSans-Regular.otf`) | `--font-nimbus` | Home About statement (`src/components/sections/About/About.module.css`) |
-| Zodiak (`src/fonts/Zodiak-Regular.woff2`) | `--font-zodiak` | Hero name (`src/components/sections/Hero/Hero.module.css`) |
 
 Replace Inter with another Google font:
 
@@ -64,20 +64,74 @@ Replace Inter with another Google font:
 Replace a local font:
 
 1. Put the new file (`.woff2` preferred) in `src/fonts/`.
-2. In `src/app/layout.tsx`, change the `src` of `nimbus` or `zodiak` to the new file name. Keep the `variable` value.
+2. In `src/app/layout.tsx`, change the `src` of `nimbus` to the new file name. Keep the `variable` value.
 3. Nimbus Sans is AGPL-licensed with a font exception (`src/fonts/NimbusSans-LICENSE.txt`). Delete that license file when the font is removed.
-4. After replacing Zodiak, re-tune the hero name: [Change the first name](#change-the-first-name-in-the-hero).
 
-## Change the first name in the hero
+## Home hero
 
-The hero shows `profile.firstName` from `src/content/profile.ts` across the full width. The size comes from `--name-em` in `src/components/sections/Hero/Hero.module.css`: the width of the word per 1em of font size, measured for "NISAL" in Zodiak (3.07).
+The home hero is `src/components/sections/Hero/Hero.tsx`, modelled on a studio wordmark layout: a row of small text at the top and one word across the full width below it.
 
-1. Change `firstName` in `src/content/profile.ts`.
+- Top row: the logo on the left (`TopBar`), then, from 1024px wide, the role line `profile.heroRole` (lowercase), and the global nav links on the right.
+- Text in the hero cannot be selected or highlighted (`user-select: none` on `.hero` in `Hero.module.css`); delete those two lines to allow it again.
+- Wordmark: `profile.heroWord` ("nisal") with a small ® at its top right, in Urbanist 700, from the left page margin to the right one (`src/components/sections/Hero/Wordmark.tsx`). It is inside the page's only `<h1>`, which gives screen readers `profile.fullName`.
+- Height: the hero ends below the wordmark (it is not a full screen tall); the About section follows and slides over it.
+
+Texts: [content-map.md](content-map.md#home-page-).
+
+Wordmark type (`.wordmark` in `src/components/sections/Hero/Hero.module.css`): Urbanist 700, letter-spacing `-0.02em`, line-height `0.82`, font size = content width / `--word-em`. The ® is `0.17em`.
+
+Entrance: each letter slides up from below the line, one after another (`NAME_STAGGER_S` apart), ease-out.
+
+Slice effect (mouse only, from `heroConfig.ts`): the word is cut into `SLICE_COUNT` horizontal bands. While the mouse moves over the word, the bands near the pointer's height are pushed sideways by the pointer's speed, inside a short window around the pointer (a random width per band between `SLICE_WIDTH_MIN` and `SLICE_WIDTH_MAX` of the word's width). Most bands move with the pointer, some against it, and each band picks a new width and direction every `SLICE_SHUFFLE_MS`, so the letters there break into stair-steps. When the pointer stops or leaves, the bands slide back and disappear. Each band is a copy of the word on the hero background, so the word at rest is plain text.
+
+| Setting | Default | What it changes |
+|---|---|---|
+| `NAME_LETTER_S` | `0.9` | Seconds each letter takes to slide up |
+| `NAME_STAGGER_S` | `0.06` | Seconds between the starts of neighbouring letters |
+| `SLICE_ENABLED` | `true` | `false`: no hover effect, and the band copies are not rendered |
+| `SLICE_COUNT` | `18` | Number of horizontal bands; more bands give finer steps |
+| `SLICE_GAIN` | `2.4` | px a band moves per px of pointer speed per frame; higher breaks the word more |
+| `SLICE_MAX_PX` | `110` | Largest sideways shift of a band, px |
+| `SLICE_SPREAD` | `0.3` | How many bands react above and below the pointer, as a share of the word's height; higher reaches more bands |
+| `SLICE_WIDTH_MIN`, `SLICE_WIDTH_MAX` | `0.06`, `0.24` | Width of the broken window around the pointer, as a share of the word's width |
+| `SLICE_SHUFFLE_MS` | `110` | ms between new widths and directions while moving; lower is more jittery |
+| `SLICE_FOLLOW` | `0.28` | Share of the remaining distance a band covers per frame (0 to 1); higher is snappier |
+| `SLICE_DECAY` | `0.88` | Share of the pointer speed kept per frame after the pointer stops (0 to 1); higher settles more slowly |
+
+The effect runs only on devices with hover and a fine pointer, and not with reduced motion. Its animation loop runs only while bands are moving and stops by itself.
+
+### Change the hero word
+
+The wordmark fills the width because its font size is the content width divided by `--word-em` in `src/components/sections/Hero/Hero.module.css`: the ink width of the word plus the ® per 1em of font size. For "nisal" in Urbanist 700 it is `2.03`.
+
+1. Change `heroWord` in `src/content/profile.ts`. Keep it one short word.
 2. Run `npm run dev` and open http://localhost:3000/ at full window width.
-3. If the name sticks out past the right margin, increase `--name-em` by 0.1. If it stops short, decrease it by 0.1.
-4. Repeat until the last letter ends at the right margin (the right edge of the text above it). Check again at 375px wide in the browser's device toolbar (F12, then Ctrl+Shift+M).
+3. If the ® sticks out past the right margin (the right edge of the "Contact" link above it), increase `--word-em` by 0.05. If it stops short, decrease it by 0.05.
+4. Repeat until the ® ends at the right margin. Check again at 375px wide in the browser's device toolbar (F12, then Ctrl+Shift+M).
 
-Done when: the name fills the width with no horizontal scrollbar.
+Done when: the word runs from the left margin to the right margin with no horizontal scrollbar.
+
+The left edge: `margin-left: -0.05em` on `.mask` and `.bandInner` pulls the first letter's ink onto the margin. A first letter with a different side bearing needs a different value; change both to the same number.
+
+## Logo
+
+The logo is `src/components/Logo/Logo.tsx`: an N whose right stem is also the I and the stem of the P (Nisal Indusara Paranawithana), followed by a blue dot, a full stop. It is an inline SVG in `currentColor`, so it is dark on the light pages (home, /work) and light on the dark pages. The dot is `--cursor-blue`.
+
+Where it shows: top left on every page, in the row with the top-right links (`src/components/TopBar/TopBar.tsx`). It links to the home page; screen readers hear `profile.fullName`, "home".
+
+Swap: the logo and the name `profile.brandName` ("Nisal Indusara") take turns in that spot (`src/components/TopBar/BrandSwap.tsx`). The outgoing one slides up and out of a mask the size of the slot. Then the name slides up into it from below, or the logo draws itself in: the N wipes up, the P's bowl draws itself and the blue dot springs in (timings in `Logo.tsx`). On page load the logo is shown without the draw-in. A page always opens on the logo. The swap pauses while the pointer is on the link or the link has keyboard focus, and while the browser tab is hidden.
+
+| Setting (`src/components/TopBar/brandConfig.ts`) | Default | What it changes |
+|---|---|---|
+| `BRAND_SWAP_MS` | `5000` | ms each state (logo, then name) stays before the swap |
+| `BRAND_IN_S` | `0.5` | Seconds the name takes to slide up from below |
+| `BRAND_OUT_S` | `0.3` | Seconds the outgoing state takes to slide up and out; the incoming one starts after it |
+
+Sizes (`src/components/TopBar/TopBar.module.css`): logo height `clamp(22px, 2vw, 30px)` (`.logoSlot`), name `clamp(14px, 1.4vw, 20px)` (`.nameSlot`).
+
+Stop the swap (logo only): in `src/components/TopBar/BrandSwap.tsx`, change `{showLogo || reduce ? (` to `{true ? (`. Show only the name instead: change it to `{false ? (`.
+
+Change the logo's shape: edit the path data `N` and `P_BOWL` and the `<circle>` in `Logo.tsx`. The view box is 40 x 28 and the strokes are 3 units wide. The favicon `src/app/icon.svg` uses the same path data; copy the change there too.
 
 ## Animation settings
 
@@ -86,7 +140,8 @@ Done when: the name fills the width with no horizontal scrollbar.
 | Easing of all Framer Motion animations | `src/components/ui/motion.ts` | `EASE_OUT = [0.22, 1, 0.36, 1]` |
 | Fade-up of blocks (`Reveal`) | `src/components/ui/motion.ts` | `DURATION = 0.5` (seconds) |
 | Easing of all CSS transitions | `src/app/globals.css` | `--ease-out` |
-| Hero name slide-up | `src/components/sections/Hero/Hero.tsx` | `duration: 0.65` |
+| Hero wordmark entrance and slice effect | `src/components/sections/Hero/heroConfig.ts` | every number; see [Home hero](#home-hero) |
+| Top-left logo and name swap | `src/components/TopBar/brandConfig.ts` | every number; see [Logo](#logo) |
 | Word-by-word statements | `src/components/ui/WordReveal.tsx` | `staggerChildren: 0.025`, `duration: 0.45` |
 | Masked labels | `src/components/ui/MaskText.tsx` | `duration: 0.5` |
 | Hairlines drawing in | `src/components/ui/Hairline.tsx` | `duration: 0.6` |
@@ -102,18 +157,22 @@ Done when: the name fills the width with no horizontal scrollbar.
 | Same fill without a mouse (keyboard focus) | `src/app/globals.css` (`.fill-hover::before`), `src/components/Nav/Nav.module.css` (`.link::before`) | `500ms`, `350ms` |
 | Cursor bubble spring | `src/components/CursorPreview/CursorPreview.tsx` | `stiffness: 300, damping: 30, mass: 0.6` |
 | Cursor dot spring | `src/components/CursorDot/CursorDot.tsx` | `stiffness: 600, damping: 40, mass: 0.4` |
-| Magnetic hover | `src/components/ui/Magnetic.tsx` | `SPRING`, and `max` per use in `Nav.tsx` and `Footer.tsx` |
+| Magnetic hover (nav links, menu circle, footer buttons) | `src/components/ui/Magnetic.tsx` | `STRENGTH = 0.5`, `MAX_OFFSET = 30` px, spring `STIFFNESS = 200`, `DAMPING = 20` |
 | Smooth scrolling | `src/components/LenisProvider.tsx` | `new Lenis({ duration: 1.1 })` |
+| Intro and page transitions | `src/components/transition/config.ts` | every number; see [Intro and page transitions](#intro-and-page-transitions) |
 
-Change a speed: edit the number. Durations in `.tsx` files are seconds; in `.css` files milliseconds.
+Change a speed: edit the number. Durations in `.tsx` files are seconds; in `.css` files milliseconds; in `config.ts` and `waterConfig.ts` milliseconds (the names end in `_MS`).
+
+Entrance animations start only when the page is ready (no intro or transition panel over it): `useReveal` in `src/components/ui/useReveal.ts` gates them.
 
 ## Turn off one animation
 
-- Entrance animation of a Framer Motion element: replace its `initial={...}` with `initial={false}`. The element then shows in its final state.
+- Entrance animation of a Framer Motion element: replace its `initial={...}` with `initial={false}` and its `animate={play ? ... : ...}` with the shown state alone (for example `animate={{ opacity: 1, y: 0 }}`). The element then shows in its final state.
+- Intro: in `src/app/layout.tsx`, delete the line `<script dangerouslySetInnerHTML={{ __html: introScript }} />`. Page transitions stay.
 - CSS hover animation: delete the `transition:` line of that rule.
 - Smooth scrolling: in `src/components/LenisProvider.tsx`, delete the line `if (!query.matches) start();`. Native scrolling is then used everywhere.
 - Cursor dot: in `src/app/layout.tsx`, delete the line `<CursorDot />`. The hover fills then grow from the center (the CSS fallback) instead of out of the dot.
-- Magnetic hover: in `src/components/ui/Magnetic.tsx`, change `max = 6` to `max = 0`. Uses that pass `max={...}` (in `Nav.tsx`, `Footer.tsx`) need `max={0}` too.
+- Magnetic hover: in `src/components/ui/Magnetic.tsx`, change `MAX_OFFSET = 30` to `MAX_OFFSET = 0`.
 
 ## Reduced motion
 
@@ -124,8 +183,11 @@ When the visitor's system has "reduce motion" turned on:
 - `src/app/globals.css` sets every CSS transition and animation to 0.01ms.
 - About images show at once, without clip-path or parallax (`RevealImage.tsx`).
 - The fullscreen menu fades instead of the circle reveal (`MenuOverlay.tsx`).
+- Home hero: the wordmark's letters fade in instead of sliding up, and the slice effect is off.
+- Top left: the logo stays; it does not swap with the name and does not draw itself in.
 - Cursor bubble and dot follow the mouse without a spring; magnetic hover is off.
 - The water ball has no film, droplets or goo: it fades in at the pointer in 150ms, follows it, and fades out in 150ms.
+- No intro and no page transition panel: the inline script does not set `data-intro`, and `TransitionLink` navigates like a normal link.
 
 Test it in Chrome: F12, Ctrl+Shift+P, type "Emulate CSS prefers-reduced-motion", choose "reduce".
 
@@ -166,6 +228,48 @@ Tuning:
 
 Turn it off: set `WATER_ENABLED = false` (plain fading circle). Rows with a `preview` image always use the image card instead.
 
+## Intro and page transitions
+
+One full-screen panel (`src/components/transition/Panel.tsx`) is the first-visit intro and the curtain between pages. The intro shows the name; a transition shows the destination's label. State flow and files: [architecture.md](architecture.md#intro-and-page-transitions).
+
+Settings, all in `src/components/transition/config.ts` (milliseconds unless noted):
+
+| Setting | Value | What it controls | Change it |
+|---|---|---|---|
+| `INTRO_MIN_MS` | `1000` | shortest intro, counted from the start of the page load | lower for a quicker intro; `0` ends it as soon as the fonts are in |
+| `INTRO_MAX_MS` | `3000` | the intro ends by then even if the fonts are still loading | keep it at or below `FAILSAFE_MS - SETTLE_MS - HOLD_MS - REVEAL_MS` (3100) |
+| `LOOP_PERIOD_MS` | `1400` | one opacity wave of a letter while the intro waits | higher is a slower wave |
+| `LOOP_STAGGER_MS` | `60` | delay between neighbouring letters' waves | `0` makes all letters pulse together |
+| `LOOP_MIN_OPACITY` | `0.3` | lowest letter opacity in the wave (0 to 1) | `1` turns the wave off |
+| `SETTLE_MS` | `250` | letters go to full opacity before the lift | higher is a slower settle |
+| `HOLD_MS` | `150` | pause on the full name before the lift | `0` lifts at once |
+| `COVER_MS` | `400` | panel rises from below to cover the page | higher is a slower cover |
+| `LABEL_IN_MS` | `300` | destination label slides up from its mask | higher is a slower slide |
+| `LABEL_HOLD_MIN_MS` | `400` | shortest time the label stays once in | higher keeps the label longer |
+| `REVEAL_MS` | `500` | panel exits upward (intro and transitions) | higher is a slower lift |
+| `ROUTE_TIMEOUT_MS` | `2000` | the panel reveals even if the new page has not arrived | higher waits longer on a slow connection |
+| `PANEL_EASE` | `[0.76, 0, 0.24, 1]` | easing (cubic-bezier) of the panel's cover and reveal movement | any four numbers, as in CSS `cubic-bezier()` |
+| `FAILSAFE_MS` | `4000` | CSS-only safety net: a pending intro panel hides itself after this, even without a working script | keep it above the longest intro (`INTRO_MAX_MS + SETTLE_MS + HOLD_MS + REVEAL_MS` = 3900) |
+
+A transition takes `COVER_MS + LABEL_IN_MS + LABEL_HOLD_MIN_MS + REVEAL_MS` = 1600 ms when the page loads in time.
+
+The panel text uses the site font (Inter), weight 400, `clamp(32px, 6vw, 88px)`, in `Panel.module.css`. Below 601px wide the name is on two lines.
+
+Labels shown during a transition (`getTransitionLabel` in `src/content/transitions.ts`):
+
+| Destination | Label |
+|---|---|
+| `/` | Home |
+| `/work/` | Work |
+| `/about/` | About |
+| `/contact/` | Contact |
+| `/work/<slug>/` | that project's `title` |
+| any other path | Nisal Paranawithana (`introName`) |
+
+See the intro again: delete the `intro-seen` key under DevTools (F12) > Application > Session Storage > the site's address, then reload. Or open the site in a private window.
+
+Turn the intro off: [Turn off one animation](#turn-off-one-animation).
+
 ## Fragile areas
 
 ### Sticky reveal footer
@@ -182,7 +286,7 @@ Below 768px wide there are no top-right links: `useIsMobile` in `Nav.tsx` always
 
 How it works: in `src/components/Nav/Nav.tsx`, top-right links use dark text when `onLightTop` is true (paths `/` and `/work`) and light text elsewhere. The menu circle sits in `.circleBar`, which has `mix-blend-mode: difference` so it is visible on light and dark sections. While hovered, the blend turns off so the fill shows as true blue.
 
-Breaks when: a new page with a light top is not added to `onLightTop` (links become invisible), the circle is moved into `.bar`, or a parent of `.circleBar` gets `transform`, `filter` or `isolation` (the blend stops working). A new page needs `<TopBar name={profile.name} />` (it marks the row with `data-nav-sentinel`) and an entry in `hasTopRow` in `Nav.tsx`, or it shows only the circle. `sentinel={false}` turns the marker off (home hero, 404).
+Breaks when: a new page with a light top is not added to `onLightTop` (links become invisible), the circle is moved into `.bar`, or a parent of `.circleBar` gets `transform`, `filter` or `isolation` (the blend stops working). A new page needs `<TopBar name={profile.name} />` (it marks the row with `data-nav-sentinel`) and an entry in `hasTopRow` in `Nav.tsx`, or it shows only the circle. `sentinel={false}` turns the marker off (home hero, 404). Link to a new page with `TransitionLink` (`src/components/transition/TransitionLink.tsx`), never with `next/link` or a plain `<a>`.
 
 ### Fullscreen menu clip-path
 

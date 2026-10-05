@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition/TransitionLink";
 import { getVisibleProjects } from "@/content/views";
 import { workPage } from "@/content/work";
 import { Reveal } from "@/components/ui/Reveal";
@@ -25,7 +25,7 @@ export function Work() {
           {projects.map((project, i) => (
             <li key={project.slug} className={styles.item}>
               <Reveal delay={i * 0.06}>
-                <Link href={`/work/${project.slug}/`} className={styles.row} {...rowProps(project.slug)}>
+                <TransitionLink href={`/work/${project.slug}/`} className={styles.row} {...rowProps(project.slug)}>
                   <h3 className={styles.title}>{project.title}</h3>
                   <span className={styles.category}>{project.category ?? project.type}</span>
                   {project.preview && (
@@ -34,16 +34,16 @@ export function Work() {
                     </span>
                   )}
                   {rowEffect(project)}
-                </Link>
+                </TransitionLink>
               </Reveal>
             </li>
           ))}
         </ul>
 
         <div className={styles.more}>
-          <Link href="/work/" className={`fill-hover ${styles.allWork}`}>
+          <TransitionLink href="/work/" className={`fill-hover ${styles.allWork}`}>
             {workPage.allWorkLabel} <span aria-hidden="true">→</span>
-          </Link>
+          </TransitionLink>
         </div>
       </div>
 

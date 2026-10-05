@@ -48,17 +48,24 @@ Every page also gets `src/app/layout.tsx`: fonts, metadata defaults from `profil
 |---|---|---|
 | Navigation (top-right links, menu circle) | `src/components/Nav/Nav.tsx` | every page, from `layout.tsx` |
 | Fullscreen menu | `src/components/Nav/MenuOverlay.tsx` | opened by the menu circle, from `Nav.tsx` |
-| Top bar (name top left linking home, nav sentinel) | `src/components/TopBar/TopBar.tsx` | every page; on the home hero and the 404 page with `sentinel={false}` |
+| Top bar (logo top left linking home, nav sentinel) | `src/components/TopBar/TopBar.tsx`, swap in `BrandSwap.tsx`, settings in `brandConfig.ts` | every page; on the home hero and the 404 page with `sentinel={false}` |
+| Logo (N, I, P monogram with a blue dot) | `src/components/Logo/Logo.tsx` | top bar, through `BrandSwap` |
 | Page wrapper (`<div className="page">`) | `src/app/layout.tsx`, styles in `src/app/globals.css` (`.page`) | every page |
 | Footer (sticky reveal) | `src/components/sections/Footer/Footer.tsx` | every page, from `layout.tsx` |
 | Contact section | `src/components/sections/Contact/Contact.tsx` | /contact/ only |
 | Project list for /work | `src/components/work/ProjectList.tsx`, `ProjectRow.tsx`, `WorkFilters.tsx`, `filters.ts` | /work/ |
+| Home hero (top row, full-width wordmark with the slice effect) | `src/components/sections/Hero/Hero.tsx`, `Wordmark.tsx`, settings in `heroConfig.ts` | / |
 | Project list for the home page | `src/components/sections/Work/Work.tsx` | / |
 | Cursor preview (decides per row: image card, or water ball) | `src/components/CursorPreview/CursorPreview.tsx` | home list, /work list, "Next project" |
 | Water ball ("View" / "Next project" on rows without a `preview`) | `src/components/work/WaterBall.tsx`, settings in `src/components/work/waterConfig.ts` | rendered inside each such row by `rowEffect(project)` from the cursor preview |
 | Cursor dot | `src/components/CursorDot/CursorDot.tsx` | every page, from `layout.tsx` |
 | Smooth scrolling and reduced motion | `src/components/LenisProvider.tsx` | wraps every page, from `layout.tsx` |
-| Small animation helpers | `src/components/ui/` (`Reveal`, `WordReveal`, `MaskText`, `Hairline`, `Magnetic`, `Arrow`, `Button`) | across pages |
+| Transition provider (intro, page transitions, `useTransition()`, `usePageReady()`) | `src/components/transition/TransitionProvider.tsx`, settings in `src/components/transition/config.ts` | wraps every page inside `LenisProvider`, from `layout.tsx` |
+| Panel (the full-screen cover for the intro and transitions) | `src/components/transition/Panel.tsx`, `Panel.module.css` | rendered once by `TransitionProvider`, so it is in the static HTML of every page |
+| TransitionLink (every internal link) | `src/components/transition/TransitionLink.tsx` | nav links, menu items, top-bar name, project rows, "All work", "More about me", "Next project", internal `Button`s, 404 link |
+| Intro script (decides before the first paint whether the intro plays) | `introScript` in `src/app/layout.tsx`, inside `<head>` | every page |
+| Page-ready gate for entrance animations | `src/components/ui/useReveal.ts` | `Reveal`, `WordReveal`, `MaskText`, `Hairline`, `RevealImage`, hero, /work header and rows, About intro, /contact/ links |
+| Small animation helpers | `src/components/ui/` (`Reveal`, `WordReveal`, `MaskText`, `Hairline`, `Magnetic`, `Arrow`, `Button`, `useReveal`) | across pages |
 
 ## How views work
 
@@ -81,3 +88,27 @@ Every page also gets `src/app/layout.tsx`: fonts, metadata defaults from `profil
 | RELEASE | on leave after SETTLE: the ball drops to the bottom line, flattens into the film and fades | `RELEASE_MS` |
 
 Leaving before SETTLE plays the formation backwards. Re-entering during the backwards play or RELEASE continues from the current state. While active, the row's `<li>` gets `position: relative` and `z-index: 2` so the ball overlaps the neighbouring rows.
+
+## Intro and page transitions
+
+One panel (`Panel.tsx`) does both. `TransitionProvider.tsx` moves it and owns the state:
+
+```
+first visit in the session:  introLooping -> introLeaving -> idle
+TransitionLink click:        idle -> covering -> waiting -> revealing -> idle
+back / forward button:       no panel; the page switches at once and scrolls to the top
+reduced motion:              no intro, no panel; links navigate normally
+```
+
+| Step | What happens |
+|---|---|
+| Before the first paint | `introScript` in the `<head>` of `src/app/layout.tsx` sets `data-intro="pending"` on `<html>` when sessionStorage has no `intro-seen` key and reduced motion is off. `Panel.module.css` shows the panel only then. A CSS animation hides it after `FAILSAFE_MS` if no script takes over. |
+| introLooping | Lenis is stopped. The letters of the name wave in opacity (CSS). The intro waits for `document.fonts.ready` and `INTRO_MIN_MS`, at most `INTRO_MAX_MS`. |
+| introLeaving | Letters settle to full opacity, then a hash in the URL is scrolled to, `intro-seen` is stored, Lenis starts, `pageReady` turns true and the panel lifts. At the end `data-intro` is removed (the panel is `display: none` again). |
+| covering | `router.push` starts, Lenis stops, `pageReady` turns false and the panel rises from below. Once covered, the fullscreen menu closes (Nav subscribes with `onCovered`). |
+| waiting | The destination label slides up. When the new pathname is committed (or after `ROUTE_TIMEOUT_MS`) and the label has shown for `LABEL_HOLD_MIN_MS`: scroll to the top (or the hash), `lenis.resize()`, focus `<main>`. |
+| revealing | Lenis starts, `pageReady` turns true, the panel exits upward and the label fades. Then the panel is hidden and the status region announces "Navigated to <label>". |
+
+Every path ends in a `finally` block that restarts Lenis, hides the panel and sets `pageReady` to true, also when an animation is interrupted.
+
+Entrance animations wait for `pageReady` through `useReveal` (`src/components/ui/useReveal.ts`), so they play while the panel lifts, not underneath it. Once played they stay played.

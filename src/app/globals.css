@@ -7,7 +7,7 @@
   --line: rgba(230, 230, 227, 0.2);
   --bg-soft: #1c1d20; /* footer and menu */
   --accent: #455ce9; /* round "View", "Get in touch" and menu close buttons */
-  --cursor-blue: #2b4bff; /* cursor bubble for projects without a preview image */
+  --cursor-blue: #2b4bff; /* cursor ball for projects without a preview image */
 
   /* Light hero. The only place these colours are defined. */
   --hero-bg: #f4f4f1;

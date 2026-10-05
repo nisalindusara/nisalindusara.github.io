@@ -1,8 +1,10 @@
 // Controls: text on the /work page (headline, filters, columns, counts, empty state),
 // the "All work" link on the home page, and the "Next project" block on project pages.
 // Docs: docs/content-map.md.
+import { profile } from "./profile";
+
 export const workPage = {
-  metaTitle: "Work | Nisal Paranawithana",
+  metaTitle: `Work | ${profile.siteTitle}`,
   metaDescription: "Selected projects by Nisal Paranawithana.",
   headline: ["Things built slowly,", "for the people who use them."],
   allWorkLabel: "All work",

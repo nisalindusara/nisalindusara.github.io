@@ -1,4 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
-  <rect width="32" height="32" rx="8" fill="#0a0a0a"/>
-  <path d="M8.5 24V8h3.4l7.4 10.2V8h3.2v16h-3.4L11.7 13.8V24z" fill="#e6e6e3"/>
+  <!-- The logo (src/components/Logo/Logo.tsx, same paths) in white with its blue dot, no background, filling the width.
+       Strokes are slightly thicker than in the logo, to stay legible at 16px. -->
+  <g transform="translate(-2.2 3.7) scale(0.88)">
+    <path d="M3 26V2h3.6L18 21V2h3v24h-3.6L6 7v19z" fill="#ffffff" stroke="#ffffff" stroke-width="1" stroke-linejoin="round"/>
+    <path d="M19.5 3.5H25a5.5 5.5 0 0 1 0 11h-5.5" fill="none" stroke="#ffffff" stroke-width="4"/>
+    <circle cx="35.5" cy="23.5" r="3.2" fill="#2b4bff"/>
+  </g>
 </svg>

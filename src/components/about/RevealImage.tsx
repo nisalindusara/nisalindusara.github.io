@@ -1,9 +1,16 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useReducedMotion, useScroll, useTransform, type Variants } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+  type MotionStyle,
+  type Variants,
+} from "framer-motion";
 import type { AboutImage } from "@/content/about";
 import { EASE_OUT } from "@/components/ui/motion";
+import { useReveal } from "@/components/ui/useReveal";
 import styles from "./about.module.css";
 
 const reveal = { duration: 0.8, ease: EASE_OUT };
@@ -36,20 +43,19 @@ export function RevealImage({
   eager?: boolean;
   className?: string;
 }) {
-  const ref = useRef<HTMLElement>(null);
   const reduce = useReducedMotion();
+  // Reduced motion: shown on load, without waiting to be scrolled into view.
+  const { ref, play } = useReveal<HTMLElement>({ trigger: reduce ? "load" : "view", amount: 0.15 });
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], reduce ? [0, 0] : [-30, 30]);
-  const play = reduce
-    ? { initial: "hidden", animate: "visible" }
-    : { initial: "hidden", whileInView: "visible", viewport: { once: true, amount: 0.15 } };
 
   return (
-    <motion.figure ref={ref} className={className} {...play}>
+    <motion.figure ref={ref} className={className} initial="hidden" animate={play ? "visible" : "hidden"}>
       <motion.div
         data-reveal-clip
         className={styles.frame}
-        style={{ aspectRatio: `${image.width} / ${image.height}` }}
+        // --ratio caps the width in about.module.css so the frame never exceeds the viewport height.
+        style={{ aspectRatio: `${image.width} / ${image.height}`, "--ratio": image.width / image.height } as MotionStyle}
         variants={frameVariants(!!reduce)}
       >
         <motion.img

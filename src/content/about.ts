@@ -2,6 +2,8 @@
 // Empty a section's data to hide that section. The only place that may state location or studies.
 // Docs: docs/content-map.md (text), docs/media.md (images).
 
+import { profile } from "./profile";
+
 export type AboutImage = {
   src: string;
   alt: string;
@@ -12,7 +14,7 @@ export type AboutImage = {
 };
 
 export const about = {
-  metaTitle: "About | Nisal Paranawithana",
+  metaTitle: `About | ${profile.siteTitle}`,
   metaDescription: "About Nisal Paranawithana: how I work and what I care about.",
 
   // Small "More about me" link under the home page About statement.

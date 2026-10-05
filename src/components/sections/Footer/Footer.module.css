@@ -87,7 +87,7 @@
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Positioned wrapper, centred on the line; it also carries the magnetic drift. */
+/* Positioned wrapper, centred on the line; it tracks the magnetic hover (the circle inside drifts). */
 .ctaPos {
   position: absolute;
   right: 9%;

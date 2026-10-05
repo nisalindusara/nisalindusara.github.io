@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { about } from "@/content/about";
 import { EASE_OUT } from "@/components/ui/motion";
+import { useReveal } from "@/components/ui/useReveal";
 import { Hairline } from "@/components/ui/Hairline";
 import { MaskText } from "@/components/ui/MaskText";
 import { WordReveal } from "@/components/ui/WordReveal";
@@ -12,6 +13,7 @@ import styles from "./about.module.css";
 /** Statement, short paragraph, facts and portrait. */
 export function Intro() {
   const { statement, body, facts, images, labels } = about;
+  const { play } = useReveal({ trigger: "load" });
   const rows = facts.filter((f) => f.value.trim());
   if (!statement && !body && rows.length === 0 && !images.portrait) return null;
 
@@ -31,7 +33,7 @@ export function Intro() {
               data-reveal
               className={styles.body}
               initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={play ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
               transition={{ duration: 0.5, ease: EASE_OUT, delay: 0.3 }}
             >
               {body}
@@ -50,7 +52,7 @@ export function Intro() {
                   data-reveal
                   className={styles.fact}
                   initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  animate={play ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
                   transition={{ duration: 0.45, ease: EASE_OUT, delay: 0.4 + i * 0.08 }}
                 >
                   <span className={styles.factLabel}>{f.label}</span>

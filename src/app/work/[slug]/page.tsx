@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   const found = findProject((await params).slug);
   if (!found) return {};
   const { project } = found;
-  const title = `${project.title} | ${profile.name}`;
+  const title = `${project.title} | ${profile.siteTitle}`;
   return {
     title,
     description: project.summary,
@@ -53,7 +53,7 @@ export default async function ProjectPage({ params }: PageProps<"/work/[slug]">)
 
   return (
     <main id="main" className={`container ${styles.page}`}>
-      <TopBar name={profile.name} />
+      <TopBar />
 
       <header className={styles.header}>
         <Reveal delay={0.05}>

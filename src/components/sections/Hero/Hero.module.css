@@ -1,68 +1,123 @@
 .hero {
   position: relative;
-  min-height: 100svh;
   background: var(--hero-bg);
   color: var(--hero-text);
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-top: 96px;
   /* + one radius: the About section overlaps the bottom of the hero by that much. */
-  padding-bottom: calc(40px + var(--radius));
+  padding-bottom: calc(clamp(32px, 4vw, 64px) + var(--radius));
+  /* Bands of the slice effect never add a horizontal scrollbar. */
+  overflow-x: clip;
+  /* The hero's text cannot be selected or highlighted (a drag across the wordmark selects nothing). */
+  -webkit-user-select: none;
+  user-select: none;
 }
 
-.hero ::selection {
-  background: var(--hero-text);
-  color: var(--hero-bg);
+/* Top row: logo in columns 1 to 3, role in 4 to 6; the fixed nav covers the right. */
+.top {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 24px;
+  align-items: start;
 }
 
-/* The name row sits at the top of the hero (the hero content is pushed to the bottom). */
-.topBar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+.top > :first-child {
+  grid-column: 1 / 4;
 }
 
+/* Small text, on the same line as the logo and the nav links. */
+.role {
+  display: none;
+  margin: 0;
+  padding: 0;
+  padding-top: var(--nav-top);
+  min-height: calc(var(--nav-top) + var(--nav-circle));
+  align-content: center;
+  font-size: var(--fs-small);
+  line-height: 1.35;
+  text-transform: lowercase;
+}
+
+.role {
+  grid-column: 4 / 7;
+}
+
+@media (min-width: 1024px) {
+  .role {
+    display: grid;
+  }
+}
+
+/* Container for the wordmark's size (cqi = this box's content width). */
 .inner {
+  margin-top: clamp(16px, 3vw, 48px);
   container-type: inline-size;
   will-change: transform, opacity;
 }
 
+.title {
+  margin: 0;
+  font-weight: inherit;
+}
+
 /*
- * "NISAL" in Zodiak, spanning the full content width.
- * --name-em is the width of the letters themselves (ink) per 1em of font size, measured in the
- * browser; font-size = content width / --name-em. The negative margin removes the N's side bearing
- * so the ink, not the glyph box, lines up with the page margin.
+ * The wordmark spans the full content width. --word-em is the ink width of the word plus the ® per
+ * 1em of font size, measured in the browser for "nisal" in Urbanist 700; font-size = width / --word-em.
+ * The negative margin on .mask and .bandInner removes the first letter's side bearing, so the ink
+ * (not the glyph box) lines up with the page margin.
  */
-.name {
-  --name-em: 3.07;
-  margin: 0 0 0 -0.042em;
-  font-family: var(--font-zodiak), Georgia, serif;
-  font-weight: 400;
-  text-transform: uppercase;
+.wordmark {
+  --word-em: 2.03;
+  position: relative;
+  display: block;
+  font-family: var(--font-urbanist), var(--font-inter), sans-serif;
+  font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 0.8;
-  font-size: calc((100vw - 2 * var(--pad)) / var(--name-em));
+  line-height: 0.82;
+  white-space: nowrap;
+  font-size: calc((100vw - 2 * var(--pad)) / var(--word-em));
 }
 
 @supports (font-size: 1cqi) {
-  .name {
-    font-size: calc(100cqi / var(--name-em));
+  .wordmark {
+    font-size: calc(100cqi / var(--word-em));
   }
 }
 
+/* The line the letters slide up into: clipped at the bottom only. */
 .mask {
   display: block;
-  overflow: hidden;
-  /* Room for the glyphs inside the mask without changing the line rhythm. */
-  padding: 0.04em 0 0.06em;
-  margin: -0.04em 0 -0.06em;
+  margin-left: -0.05em;
+  padding-bottom: 0.06em;
+  clip-path: inset(-0.6em -0.6em 0 -0.6em);
 }
 
-.line {
+.letter {
+  display: inline-block;
+}
+
+/* ® after the word, small, at the top. */
+.reg {
+  display: inline-block;
+  vertical-align: top;
+  margin-left: 0.05em;
+  font-size: 0.17em;
+  line-height: 1;
+}
+
+/* One band of the slice effect: a copy of the word on the hero background, hidden at rest. */
+.band {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  background: var(--hero-bg);
+  pointer-events: none;
+  will-change: clip-path;
+}
+
+.bandInner {
   display: block;
-  white-space: nowrap;
+  margin-left: -0.05em;
+  padding-bottom: 0.06em;
+  will-change: transform;
 }
 
 @media (max-width: 767px) {

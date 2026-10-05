@@ -18,7 +18,8 @@
 }
 
 .links,
-.circle {
+/* Magnetic wrapper of the menu circle: holds its place in the corner and catches the pointer. */
+.circleSlot {
   position: absolute;
   top: 0;
   right: 0;

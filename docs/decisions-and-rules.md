@@ -10,7 +10,8 @@ Time: about 5 minutes to read.
 - My age appears nowhere on the site.
 - No phone number appears anywhere on the site.
 - Copy stays quiet and poetic.
-- One animation style: 200 to 500 ms, ease-out (`EASE_OUT` in `src/components/ui/motion.ts`, `--ease-out` in `src/app/globals.css`). The About image reveal (800 ms) and the menu circle (600 ms) are the existing exceptions.
+- One animation style: 200 to 500 ms, ease-out (`EASE_OUT` in `src/components/ui/motion.ts`, `--ease-out` in `src/app/globals.css`). The About image reveal (800 ms) and the menu circle (600 ms) are exceptions. The home hero wordmark's letters (900 ms each) and the top-left logo and name swap (every 5 s) are exceptions. The intro (about 2 seconds when the fonts load in time, 3.9 seconds at most) and page transitions (about 1 second in total) are exceptions too; the panel moves with `PANEL_EASE` (`[0.76, 0, 0.24, 1]`, in `src/components/transition/config.ts`), not ease-out. Each single step of them takes 150 to 500 ms.
+- Every internal link uses `TransitionLink` (`src/components/transition/TransitionLink.tsx`). External links, `mailto:` links, the CV file and same-page `#` links stay plain `<a>` (or `Button`, which picks the right one).
 - Every animation respects prefers-reduced-motion ([how](design-and-motion.md#reduced-motion)).
 - No GSAP and no new heavy libraries.
 - No 3D or WebGL.
@@ -27,6 +28,15 @@ Time: about 5 minutes to read.
 | Switching projects by editing one line in `src/content/views.ts` | Tailoring per job application without any visible sign on the site. |
 | Filters built from project data | New `type`, `stack` and `year` values appear as chips without editing a list. |
 | SVG goo filter for the water ball (blur, then an alpha threshold) | It merges separate droplets into one liquid shape without a library; it is a few SVG nodes. |
+| Intro plays once per browser session (sessionStorage `intro-seen`) | It greets a first visit; repeating it on every page load or refresh would make returning visitors wait. A new tab or a new browser session shows it again. |
+| Page transitions are a curtain (one panel covers, the label shows, the panel lifts) | The new page loads and settles underneath, so no half-loaded page or layout jump is ever seen, and the intro and transitions share one look. |
+| Back and forward skip the panel | The visitor is retracing steps and expects an instant switch, as in any browser. |
+| Entrance animations wait for `pageReady` (`useReveal`) | Otherwise they would play underneath the panel and be finished when it lifts. |
+| The home hero is one full-width wordmark, "nisal®" | A single word filling the screen is the boldest way to say whose site it is, and it leaves the work directly below. The ® treats the name as a brand, matching the logo. The `<h1>` holds the full name for screen readers. |
+| The wordmark uses Urbanist 700, not Inter | Its single-storey "a", circular "o" and round dots read as a logotype at this size; Inter stays for all other text. It is a Google font loaded with `next/font`, so it adds no package. |
+| The hover effect is DOM bands with `clip-path`, not WebGL or a canvas | The rest state is real, crisp text that needs no script; the effect only adds hidden copies of the word. No new library, no 3D. |
+| The logo is an N, I and P monogram with a blue dot | One shape carries all three initials (the N's right stem is the I and the P's stem). The blue dot is a full stop in the same `--cursor-blue` as the cursor dot and the ball on project rows, so the mark ties the site's blue together. It is an inline SVG in `currentColor`, so one file works on light and dark pages. |
+| The top left swaps between the logo and "Nisal Indusara" | The logo alone does not say whose site it is; the name alone is not a mark. Taking turns teaches the visitor that the mark means the name. |
 | The goo filter is removed once the ball has formed | A blur filter is redrawn every frame; a plain circle following the pointer costs almost nothing and keeps a crisp edge. |
 
 ## Looks like a bug but is intentional
@@ -43,8 +53,18 @@ Time: about 5 minutes to read.
 - The last project in the active view has no "Next project" block.
 - The "Next project" link always uses the water ball, even when that project has a `preview` image.
 - The film of the water ball is drawn without the goo filter: at `FILM_HEIGHT` 3px the filter's threshold would erase it.
-- The hero shows only `firstName`; the full name is in the page heading for screen readers.
+- The intro shows only on the first visit in a browser session; a refresh or a link inside the site does not show it again.
+- Back and forward buttons switch pages without the panel and start at the top of the page.
+- Ctrl/Cmd/Shift/Alt-click, middle-click and links to the page you are on navigate without the panel.
+- The page transition panel shows "Contact" for /contact/ and the name for pages without a label (404).
+- The hero shows "nisal", and the top left and the browser tab titles show "Nisal Indusara", while the intro, the footer and the share image show "Nisal Paranawithana" (`profile.name`).
 - `profile.tagline` is not shown on any page; it lives on in `public/og.png` and `profile.siteDescription`.
+- The hero wordmark breaks apart only while the mouse moves over it; a still pointer leaves it whole. Phones, tablets and reduced motion get no effect.
+- The hero is not a full screen tall: it ends below the wordmark, and the About section follows directly.
+- The role line in the hero's top row shows only from 1024px wide; below that the row holds the logo and the menu circle.
+- Text in the home hero cannot be selected: dragging across the wordmark highlights nothing. Screen readers still read the full name.
+- The top-left logo and name keep swapping while the visitor reads; the swap stops only while the pointer is on it, it has keyboard focus, or the tab is hidden.
+- Every page opens on the logo, also after a page transition; the name comes after `BRAND_SWAP_MS`.
 - The footer stays in normal page flow (no reveal) when the window is shorter than the footer.
 - The footer heading slides in again every time the footer is uncovered, not only the first time.
 - "Studying" on /about/ wraps to three lines on a 375px phone.

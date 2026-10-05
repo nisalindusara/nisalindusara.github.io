@@ -2,6 +2,7 @@
 
 import { motion, type Variants } from "framer-motion";
 import { EASE_OUT } from "./motion";
+import { useReveal } from "./useReveal";
 
 const container: Variants = {
   hidden: {},
@@ -17,7 +18,7 @@ type Props = {
   text: string;
   as?: "p" | "h1" | "h2";
   className?: string;
-  /** "view": when scrolled into view (default); "load": straight away. */
+  /** "view": when scrolled into view (default); "load": straight away. Both wait for the page to be ready. */
   trigger?: "view" | "load";
   id?: string;
 };
@@ -25,13 +26,17 @@ type Props = {
 /** Reveals a sentence word by word. Each word fades and rises into place. */
 export function WordReveal({ text, as = "p", className, trigger = "view", id }: Props) {
   const Tag = motion[as];
-  const play =
-    trigger === "load"
-      ? { animate: "visible" }
-      : { whileInView: "visible", viewport: { once: true, amount: 0.3 } };
+  const { ref, play } = useReveal<HTMLParagraphElement & HTMLHeadingElement>({ trigger, amount: 0.3 });
 
   return (
-    <Tag id={id} className={className} variants={container} initial="hidden" {...play}>
+    <Tag
+      ref={ref}
+      id={id}
+      className={className}
+      variants={container}
+      initial="hidden"
+      animate={play ? "visible" : "hidden"}
+    >
       {text.split(" ").map((w, i) => (
         <span key={i}>
           <motion.span data-reveal style={{ display: "inline-block" }} variants={word}>

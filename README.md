@@ -44,12 +44,16 @@ Run in the VS Code terminal (Terminal > New Terminal), in the project folder.
 | add or replace a project image | [media.md: Replace a placeholder image](docs/media.md#replace-a-sample-placeholder-image) |
 | replace my portrait and About images | [media.md: About images](docs/media.md#replace-the-portrait-and-about-images) |
 | replace my CV | [media.md: Replace the CV](docs/media.md#replace-the-cv) |
-| change my name or tagline | [content-map.md: Change a text](docs/content-map.md#change-a-text), then [design-and-motion.md: hero name](docs/design-and-motion.md#change-the-first-name-in-the-hero) |
+| change my name or tagline | [content-map.md: Change a text](docs/content-map.md#change-a-text), then [design-and-motion.md: change the hero word](docs/design-and-motion.md#change-the-hero-word) |
 | change the About text, achievements, motivation or toolbox | [content-map.md: About page](docs/content-map.md#about-page-about) |
 | change the contact links or my email | [content-map.md: Contact link](docs/content-map.md#add-or-remove-a-contact-link) |
 | change the navigation items | [content-map.md: Navigation item](docs/content-map.md#add-or-remove-a-navigation-item) |
 | change colors or fonts | [design-and-motion.md: Palette](docs/design-and-motion.md#change-the-palette), [Font](docs/design-and-motion.md#change-a-font) |
 | change animation speed or turn an animation off | [design-and-motion.md: Animation settings](docs/design-and-motion.md#animation-settings) |
+| change the intro or transition animation | [design-and-motion.md: Intro and page transitions](docs/design-and-motion.md#intro-and-page-transitions) (all numbers in `src/components/transition/config.ts`) |
+| change the label shown during transitions | [content-map.md: Transition label](docs/content-map.md#change-the-label-shown-during-transitions) |
+| see the intro again | F12 > Application > Session Storage > the site's address: delete the `intro-seen` key and reload. Or open the site in a private window. |
+| add a link to another page of the site | use `<TransitionLink href="/page/">` from `src/components/transition/TransitionLink.tsx` ([why](docs/decisions-and-rules.md#rules)) |
 | change the page title, description, favicon or share image | [content-map.md: Page title](docs/content-map.md#page-title-and-description-browser-tab-search-results-link-previews), [media.md: Favicon](docs/media.md#replace-the-favicon-or-the-share-image) |
 | find every SAMPLE placeholder still left | [placeholders.md](docs/placeholders.md) |
 | run the site locally | [Coming back after a long break](#coming-back-after-a-long-break) |
@@ -79,10 +83,11 @@ src/
     sections/                  home sections, Contact section, footer
     work/  about/              /work and /about pieces
     CursorDot/  CursorPreview/ blue cursor dot, "View" bubble
+    transition/                intro, page transitions, TransitionLink, their settings (config.ts)
     ui/                        small shared animation helpers and buttons
   content/                     ALL editable text, links and image paths
     projects/                  one file per project, registry, Project type
-  fonts/                       local font files (Nimbus Sans, Zodiak)
+  fonts/                       local font files (Nimbus Sans)
 next.config.ts                 static export settings
 ```
 
@@ -91,7 +96,8 @@ next.config.ts                 static export settings
 - Location and studies appear only on the About page; nowhere else, including page titles.
 - My age and a phone number appear nowhere.
 - Copy stays quiet and poetic.
-- One animation style (200 to 500 ms, ease-out); every animation respects reduced motion.
+- One animation style (200 to 500 ms, ease-out); every animation respects reduced motion. The intro and page transitions are the documented exception.
+- Every internal link uses `TransitionLink`.
 - No GSAP, no new heavy libraries, no 3D or WebGL.
 - No URL parameters that reveal tailoring; use `ACTIVE_VIEW` only.
 
@@ -105,6 +111,7 @@ Full list: [docs/decisions-and-rules.md](docs/decisions-and-rules.md#rules).
 | a field name in any `src/content/*.ts` file | `docs/content-map.md` |
 | an image slot, size or folder | `docs/media.md` |
 | a CSS variable, font or animation setting | `docs/design-and-motion.md` |
+| the intro, transitions or `src/content/transitions.ts` | `docs/design-and-motion.md` (Intro and page transitions), `docs/architecture.md`, `docs/content-map.md` |
 | a page or route | `docs/architecture.md` (Routes), `docs/content-map.md` |
 | `.github/workflows/deploy.yml` or `next.config.ts` | `docs/deployment.md` |
 | a SAMPLE value | `docs/placeholders.md` (tick or delete the row) |

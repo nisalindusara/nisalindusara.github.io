@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition/TransitionLink";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { navItems } from "@/content/nav";
 import { useLenis, useScrollTo } from "@/components/LenisProvider";
 import { EASE_OUT } from "@/components/ui/motion";
-import { Magnetic, useMagnetic } from "@/components/ui/Magnetic";
+import { Magnetic } from "@/components/ui/Magnetic";
+import { useTransition } from "@/components/transition/TransitionProvider";
 import { MenuOverlay } from "./MenuOverlay";
 import styles from "./Nav.module.css";
 
@@ -51,16 +52,20 @@ export function Nav() {
   const scrollTo = useScrollTo();
   const scrollToRef = useRef(scrollTo);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const magnetic = useMagnetic({ strength: 0.25, max: 8 });
 
   // The page whose header is currently under the nav (null: none).
   const [linksFor, setLinksFor] = useState<string | null>(hasTopRow(path) ? path : null);
   const [open, setOpen] = useState(false);
   const [origin, setOrigin] = useState({ x: 0, y: 0 });
 
+  const { onCovered } = useTransition();
+
   useEffect(() => {
     scrollToRef.current = scrollTo;
   });
+
+  // A page transition keeps the menu open until the panel covers the page, then closes it underneath.
+  useEffect(() => onCovered(() => setOpen(false)), [onCovered]);
 
   // Is the header under the nav? Watches a strip from 40px down to 10% of the viewport;
   // the 40px skips the sliver of hero left under the About section's rounded corners.
@@ -94,11 +99,17 @@ export function Nav() {
     if (returnFocus) requestAnimationFrame(() => buttonRef.current?.focus());
   }, []);
 
-  /** Shared by the header links and the menu: scroll in place, or let the Link navigate. */
+  /**
+   * Shared by the header links and the menu: scroll in place, or let the link navigate.
+   * e.defaultPrevented: the page transition took over and closes the menu once the page is covered.
+   */
   const onItemClick = (e: React.MouseEvent, href: string) => {
-    setOpen(false);
     const target = inPageTarget(href, path);
-    if (!target) return;
+    if (!target) {
+      if (!e.defaultPrevented) setOpen(false);
+      return;
+    }
+    setOpen(false);
     e.preventDefault();
     // Unlock first if the menu had stopped scrolling (Lenis ignores scrollTo while stopped).
     lenis?.start();
@@ -138,8 +149,8 @@ export function Nav() {
                   .filter((item) => item.href !== "/")
                   .map((item) => (
                     <li key={item.href}>
-                      <Magnetic max={4}>
-                        <Link
+                      <Magnetic>
+                        <TransitionLink
                           href={item.href}
                           className={styles.link}
                           data-cursor-fill
@@ -147,7 +158,7 @@ export function Nav() {
                           onClick={(e) => onItemClick(e, item.href)}
                         >
                           {item.label}
-                        </Link>
+                        </TransitionLink>
                       </Magnetic>
                     </li>
                   ))}
@@ -161,26 +172,26 @@ export function Nav() {
       <div className={styles.circleBar}>
         <AnimatePresence initial={false}>
           {!showLinks && (
-            <motion.button
-              key="menu"
-              ref={buttonRef}
-              type="button"
-              className={`fill-hover ${styles.circle}`}
-              data-fill-leave="instant"
-              aria-label="Open menu"
-              aria-expanded={open}
-              aria-controls="site-menu"
-              onClick={openMenu}
-              {...magnetic}
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1, transition: pop }}
-              exit={{ opacity: 0, scale: 0, transition: fade }}
-            >
-              <span className={styles.lines} aria-hidden="true">
-                <span />
-                <span />
-              </span>
-            </motion.button>
+            <Magnetic key="menu" className={styles.circleSlot}>
+              <motion.button
+                ref={buttonRef}
+                type="button"
+                className={`fill-hover ${styles.circle}`}
+                data-fill-leave="instant"
+                aria-label="Open menu"
+                aria-expanded={open}
+                aria-controls="site-menu"
+                onClick={openMenu}
+                initial={{ opacity: 0, scale: 0 }}
+                animate={{ opacity: 1, scale: 1, transition: pop }}
+                exit={{ opacity: 0, scale: 0, transition: fade }}
+              >
+                <span className={styles.lines} aria-hidden="true">
+                  <span />
+                  <span />
+                </span>
+              </motion.button>
+            </Magnetic>
           )}
         </AnimatePresence>
       </div>

@@ -1,0 +1,42 @@
+/* Layer over the whole row; the ball can draw outside it and overlap neighbouring rows. */
+.layer {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .layer {
+    display: block;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+}
+
+/* Centred on the pointer by margins, so framer-motion owns the transform. */
+.ball {
+  /* Shrinks gently with the viewport: 96px from ~1440px wide, ~78px at 800px, never below 76px. */
+  --size: clamp(76px, 56px + 2.8vw, 96px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cursor-blue);
+  will-change: transform, opacity;
+}
+
+.label {
+  width: 80px;
+  color: #fff;
+  font-size: var(--fs-tiny);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+}

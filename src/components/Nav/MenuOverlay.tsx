@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition/TransitionLink";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { navItems } from "@/content/nav";
 import { useLenis } from "@/components/LenisProvider";
@@ -15,7 +15,7 @@ type Props = {
   /** Href of the current page's item; the dot sits there (null: none). */
   current: string | null;
   onClose: (returnFocus?: boolean) => void;
-  /** Scrolls in place or lets the link navigate; closes the menu either way. */
+  /** Scrolls in place or lets the link navigate; closes the menu (during a page transition: once the panel covers the page). */
   onItemClick: (e: React.MouseEvent, href: string) => void;
 };
 
@@ -171,14 +171,14 @@ export function MenuOverlay({ open, origin, current, onClose, onItemClick }: Pro
                 );
                 return (
                   <li key={item.href}>
-                    <Link
+                    <TransitionLink
                       href={item.href}
                       className={styles.link}
                       aria-current={item.href === current ? "page" : undefined}
                       onClick={(e) => onItemClick(e, item.href)}
                     >
                       {content}
-                    </Link>
+                    </TransitionLink>
                   </li>
                 );
               })}

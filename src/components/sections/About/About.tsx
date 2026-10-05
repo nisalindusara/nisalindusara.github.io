@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition/TransitionLink";
 import { profile } from "@/content/profile";
 import { WordReveal } from "@/components/ui/WordReveal";
 import { Arrow } from "@/components/ui/Arrow";
@@ -15,10 +15,10 @@ export function About({ moreLabel }: { moreLabel: string }) {
           About
         </h2>
         <WordReveal text={profile.about} className={styles.statement} />
-        <Link href="/about/" className={styles.more}>
+        <TransitionLink href="/about/" className={styles.more}>
           {moreLabel}
           <Arrow className={styles.arrow} />
-        </Link>
+        </TransitionLink>
       </div>
     </section>
   );

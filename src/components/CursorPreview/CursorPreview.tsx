@@ -5,13 +5,13 @@ import Image from "next/image";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import type { Project } from "@/content/projects";
 import { EASE_OUT } from "@/components/ui/motion";
-import { WaterBall } from "@/components/work/WaterBall";
+import { BlueBall } from "@/components/work/BlueBall";
 import styles from "./CursorPreview.module.css";
 
 /**
  * The cursor effect for project rows (home Work section, /work, "Next project"). The single place that
  * decides per project: with a `preview` image, the cursor-following image card ("View"); without one,
- * the water ball (WaterBall.tsx) that forms at the cursor inside the row.
+ * the blue ball (BlueBall.tsx) that follows the cursor inside the row.
  * Spread `listProps` on the list and `rowProps(slug)` on each row link, render `rowEffect(project)` inside
  * each row link, and render `bubble` once. Only on devices with hover and a fine pointer (see CSS).
  */
@@ -49,8 +49,8 @@ export function useCursorPreview(projects: Project[], { label = "View" }: { labe
   // Only projects with a preview image use the floating card.
   const current = projects.find((p) => p.slug === active && p.preview);
 
-  /** Inside each row link: the water ball for projects without a preview image. */
-  const rowEffect = (project: Project) => (project.preview ? null : <WaterBall label={label} />);
+  /** Inside each row link: the blue ball for projects without a preview image. */
+  const rowEffect = (project: Project) => (project.preview ? null : <BlueBall label={label} />);
 
   const bubble = (
     <motion.div

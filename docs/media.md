@@ -125,7 +125,7 @@ Files to edit: `src/app/icon.svg`, `public/og.png`
 
 Steps:
 
-1. Favicon: replace `src/app/icon.svg` with an SVG of the same name. Keep a square `viewBox`.
+1. Favicon: replace `src/app/icon.svg` with an SVG of the same name. Keep a square `viewBox`. The current one is the logo (`src/components/Logo/Logo.tsx`, same path data) in white with its blue dot, on no background, scaled by `0.88` to fill the width, with slightly thicker strokes so it reads at 16px. White shows on dark browser tab bars and is faint on light ones. After changing the logo's shape, copy the new path data into `icon.svg` too.
 2. Share image: make a 1200 x 630 PNG in any image editor (Figma, Canva). It currently shows the name "Nisal Paranawithana" and the tagline on black. Save it as `public/og.png`, replacing the old file.
 3. Run `npm run build`.
 

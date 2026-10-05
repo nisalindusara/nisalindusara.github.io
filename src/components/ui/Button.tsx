@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition/TransitionLink";
 import { useScrollTo } from "@/components/LenisProvider";
 import styles from "./Button.module.css";
 
@@ -36,9 +36,9 @@ export function Button({ href, children, variant = "outline", className }: Props
 
   if (href.startsWith("/") && !/\.\w+$/.test(href)) {
     return (
-      <Link href={href} className={cls}>
+      <TransitionLink href={href} className={cls}>
         {children}
-      </Link>
+      </TransitionLink>
     );
   }
 

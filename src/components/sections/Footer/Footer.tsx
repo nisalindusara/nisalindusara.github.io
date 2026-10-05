@@ -113,8 +113,8 @@ export function Footer() {
           </div>
 
           <div className={styles.rule}>
-            {/* The wrapper is positioned (and drifts); the circle scales on hover. */}
-            <Magnetic className={styles.ctaPos} max={10}>
+            {/* The wrapper is positioned (and tracks the pointer); the circle drifts and scales on hover. */}
+            <Magnetic className={styles.ctaPos}>
               <a href={`mailto:${profile.email}`} className={styles.cta}>
                 {profile.contactCta}
               </a>

@@ -9,7 +9,14 @@
 
 /* ---- Images ---- */
 
+/*
+ * Never taller than the viewport: the width is capped at viewport height x aspect ratio (--ratio, set by
+ * RevealImage.tsx), and the aspect ratio gives the height. A capped frame narrows and centres in its column.
+ */
 .frame {
+  max-width: calc(100vh * var(--ratio));
+  max-width: calc(100svh * var(--ratio)); /* small viewport height: fits with mobile browser bars shown */
+  margin-inline: auto;
   position: relative;
   overflow: hidden;
   border-radius: 24px;

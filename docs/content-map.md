@@ -11,7 +11,7 @@ Time: about 5 minutes per change.
 
 | Page and section | What I see | File | Field name |
 |---|---|---|---|
-| Top left (every page, links to the home page) | Nisal Paranawithana | `src/content/profile.ts` | `profile.name` |
+| Top left (every page, links to the home page) | the logo, taking turns with Nisal Indusara | logo: `src/components/Logo/Logo.tsx`; name: `src/content/profile.ts` | logo: component; name: `profile.brandName`; screen-reader name of the link: `profile.fullName` |
 | Top-right links, fullscreen menu | Home, Work, About, Contact | `src/content/nav.ts` | `navItems[].label` |
 | Fullscreen menu heading | Navigation | `src/components/Nav/MenuOverlay.tsx` | component |
 | Footer statement | Let’s work together | `src/content/profile.ts` | `profile.closingLine` |
@@ -21,12 +21,17 @@ Time: about 5 minutes per change.
 | Footer bottom row | © 2026 Nisal Paranawithana | `src/content/profile.ts` | `profile.copyrightYear`, `profile.name` |
 | Footer bottom row | Back to top | `src/components/sections/Footer/Footer.tsx` | component |
 | Keyboard skip link | Skip to content | `src/app/layout.tsx` | component |
+| First-visit intro | Nisal Paranawithana | `src/content/transitions.ts` (from `profile.name`) | `introName` |
+| Page transition label | Home, Work, About, Contact, a project title, or the name | `src/content/transitions.ts` | `labels`; project pages use the project's `title` |
+| Screen reader announcement after a transition | Navigated to <label> | `src/components/transition/TransitionProvider.tsx` | component |
 
 ### Home page (/)
 
 | Page and section | What I see | File | Field name |
 |---|---|---|---|
-| Hero | NISAL (shown in capitals by CSS) | `src/content/profile.ts` | `profile.firstName` |
+| Hero wordmark, full width (the page's only `<h1>`) | nisal® | `src/content/profile.ts` | `profile.heroWord` (the ® is added by `src/components/sections/Hero/Wordmark.tsx`) |
+| Hero wordmark, for screen readers | Nisal Indusara Paranawithana | `src/content/profile.ts` | `profile.fullName` |
+| Hero top row, small line (1024px and wider) | design, planning and code | `src/content/profile.ts` | `profile.heroRole` |
 | About statement | I like the moment... | `src/content/profile.ts` | `profile.about` |
 | About link | More about me | `src/content/about.ts` | `about.moreLink` |
 | Work heading | Selected work | `src/components/sections/Work/Work.tsx` | component |
@@ -87,13 +92,13 @@ Time: about 5 minutes per change.
 
 | Page | File | Fields |
 |---|---|---|
-| Home, 404 | `src/content/profile.ts` | `profile.name`, `profile.siteDescription` |
-| /work/ | `src/content/work.ts` | `workPage.metaTitle`, `workPage.metaDescription` |
-| /work/<slug>/ | project file | title is `<title> \| <profile.name>`; description is `summary` |
-| /about/ | `src/content/about.ts` | `about.metaTitle`, `about.metaDescription` |
-| /contact/ | `src/content/profile.ts` | `contactSection.metaTitle`, `contactSection.metaDescription` |
+| Home, 404 | `src/content/profile.ts` | title is `profile.siteTitle` (Nisal Indusara, from `brandName` at the top of the file); description is `profile.siteDescription` |
+| /work/ | `src/content/work.ts` | `workPage.metaTitle` (Work \| `profile.siteTitle`), `workPage.metaDescription` |
+| /work/<slug>/ | project file | title is `<title> \| <profile.siteTitle>`; description is `summary` |
+| /about/ | `src/content/about.ts` | `about.metaTitle` (About \| `profile.siteTitle`), `about.metaDescription` |
+| /contact/ | `src/content/profile.ts` | `contactSection.metaTitle` (Contact \| Nisal Indusara), `contactSection.metaDescription` |
 
-`profile.tagline` and `profile.lastName` are not shown anywhere. The share image `public/og.png` contains the name and tagline as pixels: [docs/media.md](media.md#replace-the-favicon-or-the-share-image).
+`profile.tagline` is not shown on a page; it builds `profile.siteDescription`. `profile.lastName` is not shown anywhere. `profile.name` (Nisal Paranawithana) is the intro, the footer and the share image. "Nisal Indusara" is `brandName` at the top of `src/content/profile.ts`: it is the top left (`profile.brandName`) and every browser tab title (`profile.siteTitle`); change it there once to change both. The share image `public/og.png` contains the name and tagline as pixels: [docs/media.md](media.md#replace-the-favicon-or-the-share-image).
 
 ## Change a text
 
@@ -213,9 +218,24 @@ Steps:
 
 1. Rename or reorder: edit `label` or move entries. The Home entry (`href: "/"`) is shown only in the fullscreen menu.
 2. Remove: delete the entry.
-3. Add: insert `{ label: "<REPLACE: Label>", href: "<REPLACE: /existing-page/>" },`. The page must exist (see the routes table in [docs/architecture.md](architecture.md#routes)). End internal paths with `/`.
+3. Add: insert `{ label: "<REPLACE: Label>", href: "<REPLACE: /existing-page/>" },`. The page must exist (see the routes table in [docs/architecture.md](architecture.md#routes)). End internal paths with `/`. Add the page's transition label to `labels` in `src/content/transitions.ts` (without it the panel shows the name). The nav renders items with `TransitionLink`; any other link to the page must use `TransitionLink` too.
 4. Run `npm run dev` and click every item on every page.
 
 Done when: each item opens its page. The current-page dot exists only for `/`, `/work/`, `/about/` and `/contact/` (the `current` value in `src/components/Nav/Nav.tsx`).
 
 If it fails: [troubleshooting: a route returns 404](troubleshooting.md#t-404).
+
+## Change the label shown during transitions
+
+Goal: the word on the panel while a page loads changes.
+
+Files to edit: `src/content/transitions.ts`
+
+Steps:
+
+1. Fixed pages: edit the text in `labels` (keys are paths without the trailing `/`, for example `"/work"`).
+2. Project pages: the label is the project's `title` in its project file.
+3. Intro and pages without a label: `introName` (it is `profile.name`).
+4. Run `npm run dev` and click a link to that page.
+
+Done when: the panel shows the new label. Only `TransitionLink`s show the panel ([architecture.md](architecture.md#intro-and-page-transitions)).

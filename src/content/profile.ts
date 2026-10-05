@@ -1,12 +1,26 @@
-// Controls: name, home About statement, footer text, email and social links, CV path,
+// Controls: name, top-left brand name, home hero wordmark and role line, home About statement, footer text, email and social links, CV path,
 // Contact page links and labels, and the site title, description and URL (metadata).
 // Docs: docs/content-map.md; links and email: recipe "Add or remove a contact link".
 
+const name = "Nisal Paranawithana";
+// Top left (taking turns with the logo) and the browser tab title.
+const brandName = "Nisal Indusara";
+// One sentence; feeds the page description (siteDescription below).
+const tagline = "Software, shaped slowly and with care.";
+
 export const profile = {
-  name: "Nisal Paranawithana",
-  firstName: "Nisal",
+  name,
   lastName: "Paranawithana",
-  tagline: "Software, shaped slowly and with care.",
+  // Accessible name of the top-left logo link ("<fullName>, home").
+  fullName: "Nisal Indusara Paranawithana",
+  brandName,
+  // Browser tab title of the home page, and the end of every other page's title ("Work | Nisal Indusara").
+  siteTitle: brandName,
+  tagline,
+  // Home hero wordmark, shown lowercase across the full width with a ® after it. One short word.
+  heroWord: "nisal",
+  // Small line in the home hero's top row (1024px and wider), next to the logo.
+  heroRole: "design, planning and code", // SAMPLE: replace
   about:
     "I like the moment a messy problem goes quiet and becomes obvious. I build software the way a carpenter builds a table: for the person who will actually use it, with the joinery hidden.",
   closingLine: "Let’s work together",
@@ -19,8 +33,7 @@ export const profile = {
   copyrightYear: "2026",
 
   // Used for <meta> tags and Open Graph.
-  siteDescription:
-    "Nisal Paranawithana. Software, shaped slowly and with care.",
+  siteDescription: `${name}. ${tagline}`,
   siteUrl: "https://nisal-sample.github.io", // SAMPLE: replace with the real deployed URL (needed for absolute Open Graph links)
 };
 
@@ -35,7 +48,7 @@ export const contactLinks = [
 
 export const contactSection = {
   label: "Contact",
-  metaTitle: "Contact | Nisal Paranawithana",
+  metaTitle: `Contact | ${brandName}`,
   metaDescription: "Get in touch with Nisal Paranawithana.",
 };
 

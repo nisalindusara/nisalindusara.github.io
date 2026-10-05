@@ -24,8 +24,9 @@
     transform: translate(-50%, -50%);
     display: grid;
     place-items: center;
-    width: 360px;
-    height: 320px;
+    /* Shrinks gently with the viewport: 360px from ~1440px wide, ~290px at 800px, never below 260px. */
+    width: clamp(260px, 200px + 11vw, 360px);
+    aspect-ratio: 9 / 8;
     background: #4a4a4c;
     overflow: hidden;
   }
@@ -48,8 +49,9 @@
     font-size: var(--fs-small);
     font-weight: 500;
     position: relative;
-    width: 80px;
-    height: 80px;
+    /* 80px from ~1440px wide, ~66px at 800px, never below 64px. */
+    width: clamp(64px, 48px + 2.2vw, 80px);
+    aspect-ratio: 1;
     background: var(--accent);
   }
 }
