@@ -17,7 +17,7 @@ Global variables are in `src/app/globals.css` under `:root`. Below 768px wide, `
 | `--line` | `src/app/globals.css` | Hairlines on dark pages |
 | `--bg-soft` | `src/app/globals.css` | Footer and fullscreen menu background, image frames on /about/ |
 | `--accent` | `src/app/globals.css` | Blue: cursor dot, nav hover circles, menu circle fill, footer button fill, "Get in touch", menu close button, "View" label on image bubbles |
-| `--cursor-blue` | `src/app/globals.css` | Blue circle bubble on list rows of projects without a `preview`, and "Next project" |
+| `--cursor-blue` | `src/app/globals.css` | The water ball and its film on rows of projects without a `preview`, and on "Next project" |
 | `--hero-bg` | `src/app/globals.css` | Light background of the home hero and /work |
 | `--hero-text` | `src/app/globals.css` | Dark text on the home hero and /work, dark nav links there |
 | `--pad` | `src/app/globals.css` | Side padding of the page (40px, 20px below 768px) |
@@ -98,8 +98,8 @@ Done when: the name fills the width with no horizontal scrollbar.
 | Fullscreen menu open and close | `src/components/Nav/MenuOverlay.tsx` | `0.6` open, `0.45` close |
 | Menu item letter roll | `src/components/Nav/MenuOverlay.module.css` | `550ms`, `25ms` per letter |
 | About images reveal | `src/components/about/RevealImage.tsx` | `reveal = { duration: 0.8 }`, parallax `[-30, 30]` px |
-| Hover fill on buttons | `src/app/globals.css` (`.fill-hover::before`) | `600ms` |
-| Nav link hover circle | `src/components/Nav/Nav.module.css` (`.link::before`) | `350ms` |
+| Hover fill on buttons and nav links (grows out of the cursor dot) | `src/components/CursorDot/CursorDot.tsx` | `FILL_MS = 500` (grow), `LEAVE_MS = 350` (shrink back; the dot then grows in under the pointer), easing from `EASE_OUT` |
+| Same fill without a mouse (keyboard focus) | `src/app/globals.css` (`.fill-hover::before`), `src/components/Nav/Nav.module.css` (`.link::before`) | `500ms`, `350ms` |
 | Cursor bubble spring | `src/components/CursorPreview/CursorPreview.tsx` | `stiffness: 300, damping: 30, mass: 0.6` |
 | Cursor dot spring | `src/components/CursorDot/CursorDot.tsx` | `stiffness: 600, damping: 40, mass: 0.4` |
 | Magnetic hover | `src/components/ui/Magnetic.tsx` | `SPRING`, and `max` per use in `Nav.tsx` and `Footer.tsx` |
@@ -112,7 +112,7 @@ Change a speed: edit the number. Durations in `.tsx` files are seconds; in `.css
 - Entrance animation of a Framer Motion element: replace its `initial={...}` with `initial={false}`. The element then shows in its final state.
 - CSS hover animation: delete the `transition:` line of that rule.
 - Smooth scrolling: in `src/components/LenisProvider.tsx`, delete the line `if (!query.matches) start();`. Native scrolling is then used everywhere.
-- Cursor dot: in `src/app/layout.tsx`, delete the line `<CursorDot />`.
+- Cursor dot: in `src/app/layout.tsx`, delete the line `<CursorDot />`. The hover fills then grow from the center (the CSS fallback) instead of out of the dot.
 - Magnetic hover: in `src/components/ui/Magnetic.tsx`, change `max = 6` to `max = 0`. Uses that pass `max={...}` (in `Nav.tsx`, `Footer.tsx`) need `max={0}` too.
 
 ## Reduced motion
@@ -125,8 +125,46 @@ When the visitor's system has "reduce motion" turned on:
 - About images show at once, without clip-path or parallax (`RevealImage.tsx`).
 - The fullscreen menu fades instead of the circle reveal (`MenuOverlay.tsx`).
 - Cursor bubble and dot follow the mouse without a spring; magnetic hover is off.
+- The water ball has no film, droplets or goo: it fades in at the pointer in 150ms, follows it, and fades out in 150ms.
 
 Test it in Chrome: F12, Ctrl+Shift+P, type "Emulate CSS prefers-reduced-motion", choose "reduce".
+
+## Water ball
+
+On rows of projects without a `preview` image (home list, /work, and "Next project"), a blue ball labelled "View" forms at the pointer. Component: `src/components/work/WaterBall.tsx`. Every number is in `src/components/work/waterConfig.ts`. It runs only with a mouse (`hover: hover` and `pointer: fine`).
+
+Phases on pointer enter: FILM (a thin film fades in on the row's bottom line), BEAD (it draws into droplets), GATHER (the droplets flow to the pointer and merge into the ball, which overshoots to 1.1x), SETTLE (one plain circle remains, the label fades in, the ball follows the pointer). On leave: before SETTLE the formation plays backwards; after it, RELEASE drops the ball onto the bottom line, flattens it into the film and fades it out. With the defaults the formation takes 900 ms.
+
+| Setting | Default | What it changes |
+|---|---|---|
+| `WATER_ENABLED` | `true` | `false`: a plain circle fades in at the pointer instead |
+| `TIME_SCALE` | `1` | Multiplies every duration; `5` is slow motion |
+| `BALL_RADIUS` | `48` | Radius of the finished ball, px |
+| `BLOB_COUNT` | `9` | Number of droplets |
+| `BLOB_START_R` | `2` | Droplet radius in the film, px |
+| `BLOB_BEAD_R` | `14` | Droplet radius after beading, px |
+| `FILM_HEIGHT` | `3` | Film thickness, px |
+| `FILM_MS` | `100` | Film fade-in |
+| `BEAD_MS` | `220` | Film turning into droplets |
+| `GATHER_MS` | `340` | One droplet's trip to the ball |
+| `GATHER_STAGGER_MS` | `120` | Extra delay for the farthest droplet (nearest leave first) |
+| `SETTLE_MS` | `120` | Ball settling from 1.1x to 1x, label fading in |
+| `RELEASE_MS` | `350` | Ball dropping back into the film; also the longest backwards play |
+| `GOO_BLUR` | `8` | How far apart droplets start to merge |
+| `GOO_ALPHA_MULT` | `20` | Edge sharpness of merged droplets |
+| `GOO_ALPHA_OFFSET` | `-9` | Droplet thickness; more negative is thinner |
+| `FOLLOW_STIFFNESS`, `FOLLOW_DAMPING` | `220`, `24` | Spring that moves the ball toward the pointer |
+
+Tuning:
+
+| I want it | Change in `waterConfig.ts` |
+|---|---|
+| more watery | `GOO_BLUR` to `10`, `BLOB_COUNT` to `12` |
+| faster | `TIME_SCALE` to `0.7` |
+| bigger ball | `BALL_RADIUS` to `60` |
+| see it in slow motion | `TIME_SCALE` to `5` (set back to `1` before deploying) |
+
+Turn it off: set `WATER_ENABLED = false` (plain fading circle). Rows with a `preview` image always use the image card instead.
 
 ## Fragile areas
 

@@ -7,33 +7,20 @@ import { Reveal } from "@/components/ui/Reveal";
 import { useCursorPreview } from "@/components/CursorPreview/CursorPreview";
 import styles from "./NextProject.module.css";
 
-/** Centred "Next project" link at the end of a project page, with a blue "Next project" cursor. */
+/** Centred "Next project" link at the end of a project page, with a blue "Next project" water ball. */
 export function NextProject({ project }: { project: Project }) {
-  // Always the blue circle here, even if the project has a preview image.
-  const { listProps, rowProps, bubble } = useCursorPreview([{ ...project, preview: undefined }], {
+  // Always the water ball here, even if the project has a preview image.
+  const { rowEffect } = useCursorPreview([{ ...project, preview: undefined }], {
     label: nextProject.cursor,
   });
-  const row = rowProps(project.slug);
 
   return (
-    <>
-      <Reveal>
-        <Link
-          href={`/work/${project.slug}/`}
-          className={styles.next}
-          onPointerEnter={(e) => {
-            listProps.onPointerEnter(e);
-            row.onPointerEnter();
-          }}
-          onPointerMove={listProps.onPointerMove}
-          onPointerLeave={listProps.onPointerLeave}
-          onFocus={row.onFocus}
-        >
-          <span className={styles.label}>{nextProject.label}</span>
-          <span className={styles.title}>{project.title}</span>
-        </Link>
-      </Reveal>
-      {bubble}
-    </>
+    <Reveal>
+      <Link href={`/work/${project.slug}/`} className={styles.next}>
+        <span className={styles.label}>{nextProject.label}</span>
+        <span className={styles.title}>{project.title}</span>
+        {rowEffect({ ...project, preview: undefined })}
+      </Link>
+    </Reveal>
   );
 }

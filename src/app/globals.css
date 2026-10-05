@@ -205,7 +205,9 @@ html.lenis body {
 }
 
 /*
- * Hover fill: a circle rises from the bottom edge and fills the element, then drops back on leave.
+ * Hover fill: a circle grows to fill the element. With a mouse, CursorDot.tsx animates it from the
+ * cursor dot (it starts as the dot and grows; on leave it shrinks back to the pointer). The CSS below
+ * is the fallback (keyboard focus, before the script runs): it grows from the centre.
  * Set --fill (fill colour) and --fill-text (text colour while filled) on the element.
  */
 .fill-hover {
@@ -221,15 +223,14 @@ html.lenis body {
   content: "";
   position: absolute;
   z-index: -1;
-  left: -25%;
-  top: 100%;
+  left: 50%;
+  top: 50%;
   width: 150%;
   aspect-ratio: 1;
   border-radius: 50%;
   background: var(--fill, currentColor);
-  transition:
-    top 600ms var(--ease-out),
-    transform 600ms var(--ease-out);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 500ms var(--ease-out);
 }
 
 @media (hover: hover) {
@@ -239,8 +240,7 @@ html.lenis body {
   }
 
   .fill-hover:hover::before {
-    top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 
@@ -249,6 +249,5 @@ html.lenis body {
 }
 
 .fill-hover:focus-visible::before {
-  top: 50%;
-  transform: translateY(-50%);
+  transform: translate(-50%, -50%) scale(1);
 }

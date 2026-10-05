@@ -45,7 +45,8 @@
   transition: color 300ms var(--ease-out);
 }
 
-/* Hover: a blue circle grows behind the label, text turns white. */
+/* Hover: a blue circle behind the label, text turns white. With a mouse the circle grows out of the
+   cursor dot (CursorDot.tsx); this CSS is the fallback and grows it from the centre. */
 .link::before {
   content: "";
   position: absolute;
@@ -54,10 +55,9 @@
   top: 50%;
   width: var(--nav-circle);
   height: var(--nav-circle);
-  margin: calc(var(--nav-circle) / -2) 0 0 calc(var(--nav-circle) / -2);
   border-radius: 50%;
   background: var(--accent);
-  transform: scale(0);
+  transform: translate(-50%, -50%) scale(0);
   transition: transform 350ms var(--ease-out);
 }
 
@@ -67,7 +67,7 @@
 }
 
 .link:focus-visible::before {
-  transform: scale(1);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 @media (hover: hover) {
@@ -76,7 +76,7 @@
   }
 
   .link:hover::before {
-    transform: scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
 }
 

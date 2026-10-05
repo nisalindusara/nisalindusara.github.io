@@ -142,6 +142,7 @@ export function Nav() {
                         <Link
                           href={item.href}
                           className={styles.link}
+                          data-cursor-fill
                           aria-current={item.href === current ? "page" : undefined}
                           onClick={(e) => onItemClick(e, item.href)}
                         >
@@ -165,6 +166,7 @@ export function Nav() {
               ref={buttonRef}
               type="button"
               className={`fill-hover ${styles.circle}`}
+              data-fill-leave="instant"
               aria-label="Open menu"
               aria-expanded={open}
               aria-controls="site-menu"

@@ -24,6 +24,7 @@
 }
 
 .row {
+  position: relative; /* holds the water ball layer */
   align-items: center;
   min-height: clamp(104px, 11vw, 160px);
   padding: 24px 0;

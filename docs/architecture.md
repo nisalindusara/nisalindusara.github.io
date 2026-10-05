@@ -54,7 +54,8 @@ Every page also gets `src/app/layout.tsx`: fonts, metadata defaults from `profil
 | Contact section | `src/components/sections/Contact/Contact.tsx` | /contact/ only |
 | Project list for /work | `src/components/work/ProjectList.tsx`, `ProjectRow.tsx`, `WorkFilters.tsx`, `filters.ts` | /work/ |
 | Project list for the home page | `src/components/sections/Work/Work.tsx` | / |
-| Cursor bubble ("View", "Next project") | `src/components/CursorPreview/CursorPreview.tsx` | home list, /work list, "Next project" |
+| Cursor preview (decides per row: image card, or water ball) | `src/components/CursorPreview/CursorPreview.tsx` | home list, /work list, "Next project" |
+| Water ball ("View" / "Next project" on rows without a `preview`) | `src/components/work/WaterBall.tsx`, settings in `src/components/work/waterConfig.ts` | rendered inside each such row by `rowEffect(project)` from the cursor preview |
 | Cursor dot | `src/components/CursorDot/CursorDot.tsx` | every page, from `layout.tsx` |
 | Smooth scrolling and reduced motion | `src/components/LenisProvider.tsx` | wraps every page, from `layout.tsx` |
 | Small animation helpers | `src/components/ui/` (`Reveal`, `WordReveal`, `MaskText`, `Hairline`, `Magnetic`, `Arrow`, `Button`) | across pages |
@@ -66,3 +67,17 @@ Every page also gets `src/app/layout.tsx`: fonts, metadata defaults from `profil
 ## How filters get their options
 
 `src/components/work/filters.ts` builds the chips from the visible projects: `optionsFor` collects every `type`, every `stack` entry and every `year`, counts them, and sorts them (A to Z, years newest first). `matches` decides which rows show. Exact rules: [docs/projects.md](projects.md#filter-behavior). The filter state is not stored; reloading /work/ clears it.
+
+## Water ball phases
+
+`src/components/work/WaterBall.tsx` draws an SVG layer over its row. One shared `requestAnimationFrame` loop runs only while at least one ball is forming, settled or releasing; it stops when every row is idle.
+
+| Phase | What happens | Duration setting |
+|---|---|---|
+| FILM | a thin film fades in on the row's bottom line | `FILM_MS` |
+| BEAD | the film draws into `BLOB_COUNT` droplets | `BEAD_MS` |
+| GATHER | droplets flow to the pointer (spring-smoothed) and merge into the ball under the goo filter; nearest first | `GATHER_MS`, `GATHER_STAGGER_MS` |
+| SETTLE | the goo filter is removed; one plain circle settles from 1.1x and follows the pointer; the label fades in | `SETTLE_MS` |
+| RELEASE | on leave after SETTLE: the ball drops to the bottom line, flattens into the film and fades | `RELEASE_MS` |
+
+Leaving before SETTLE plays the formation backwards. Re-entering during the backwards play or RELEASE continues from the current state. While active, the row's `<li>` gets `position: relative` and `z-index: 2` so the ball overlaps the neighbouring rows.

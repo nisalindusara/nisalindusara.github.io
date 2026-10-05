@@ -10,7 +10,7 @@ import styles from "./Work.module.css";
 
 export function Work() {
   const projects = getVisibleProjects();
-  const { listProps, rowProps, bubble } = useCursorPreview(projects);
+  const { listProps, rowProps, rowEffect, bubble } = useCursorPreview(projects);
 
   return (
     <section id="work" className={styles.work} aria-labelledby="work-title">
@@ -33,6 +33,7 @@ export function Work() {
                       <Image src={project.preview} alt="" width={800} height={600} />
                     </span>
                   )}
+                  {rowEffect(project)}
                 </Link>
               </Reveal>
             </li>

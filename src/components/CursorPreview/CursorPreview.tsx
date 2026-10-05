@@ -5,12 +5,15 @@ import Image from "next/image";
 import { motion, useMotionValue, useReducedMotion, useSpring } from "framer-motion";
 import type { Project } from "@/content/projects";
 import { EASE_OUT } from "@/components/ui/motion";
+import { WaterBall } from "@/components/work/WaterBall";
 import styles from "./CursorPreview.module.css";
 
 /**
- * Cursor-following "View" bubble for project lists (home Work section and /work).
- * Spread `listProps` on the list and `rowProps(slug)` on each row link, and render `bubble`.
- * Only shown on devices with hover and a fine pointer (see CSS).
+ * The cursor effect for project rows (home Work section, /work, "Next project"). The single place that
+ * decides per project: with a `preview` image, the cursor-following image card ("View"); without one,
+ * the water ball (WaterBall.tsx) that forms at the cursor inside the row.
+ * Spread `listProps` on the list and `rowProps(slug)` on each row link, render `rowEffect(project)` inside
+ * each row link, and render `bubble` once. Only on devices with hover and a fine pointer (see CSS).
  */
 export function useCursorPreview(projects: Project[], { label = "View" }: { label?: string } = {}) {
   const reduce = useReducedMotion();
@@ -43,7 +46,11 @@ export function useCursorPreview(projects: Project[], { label = "View" }: { labe
     onFocus: () => setActive(null),
   });
 
-  const current = projects.find((p) => p.slug === active);
+  // Only projects with a preview image use the floating card.
+  const current = projects.find((p) => p.slug === active && p.preview);
+
+  /** Inside each row link: the water ball for projects without a preview image. */
+  const rowEffect = (project: Project) => (project.preview ? null : <WaterBall label={label} />);
 
   const bubble = (
     <motion.div
@@ -55,8 +62,7 @@ export function useCursorPreview(projects: Project[], { label = "View" }: { labe
       transition={{ duration: 0.35, ease: EASE_OUT }}
       aria-hidden="true"
     >
-      {/* With a preview image: the image card. */}
-      <div className={styles.card} style={{ opacity: current?.preview ? 1 : 0 }}>
+      <div className={styles.card}>
         {projects.map(
           (project) =>
             project.preview && (
@@ -73,13 +79,8 @@ export function useCursorPreview(projects: Project[], { label = "View" }: { labe
         )}
         <span className={styles.view}>{label}</span>
       </div>
-
-      {/* Without one: a solid blue circle. */}
-      <span className={styles.dot} style={{ opacity: current && !current.preview ? 1 : 0 }}>
-        {label}
-      </span>
     </motion.div>
   );
 
-  return { listProps, rowProps, bubble };
+  return { listProps, rowProps, rowEffect, bubble };
 }

@@ -17,16 +17,11 @@
     will-change: transform;
   }
 
-  .card,
-  .dot {
+  .card {
     position: absolute;
     left: 0;
     top: 0;
     transform: translate(-50%, -50%);
-    transition: opacity 250ms var(--ease-out);
-  }
-
-  .card {
     display: grid;
     place-items: center;
     width: 360px;
@@ -45,29 +40,16 @@
     transition: opacity 300ms var(--ease-out);
   }
 
-  .view,
-  .dot {
+  .view {
     display: grid;
     place-items: center;
     border-radius: 50%;
     color: #fff;
     font-size: var(--fs-small);
     font-weight: 500;
-  }
-
-  .view {
     position: relative;
     width: 80px;
     height: 80px;
     background: var(--accent);
-  }
-
-  .dot {
-    width: 96px;
-    height: 96px;
-    padding: 12px;
-    text-align: center;
-    line-height: 1.15;
-    background: var(--cursor-blue);
   }
 }

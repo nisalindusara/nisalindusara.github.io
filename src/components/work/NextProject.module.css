@@ -1,4 +1,5 @@
 .next {
+  position: relative; /* holds the water ball layer */
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -14,7 +14,7 @@ import styles from "./ProjectList.module.css";
 export function ProjectList({ projects }: { projects: Project[] }) {
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS);
   const [firstLoad, setFirstLoad] = useState(true);
-  const { listProps, rowProps, bubble } = useCursorPreview(projects);
+  const { listProps, rowProps, rowEffect, bubble } = useCursorPreview(projects);
 
   // Stagger the rows on the first load only; later filter changes animate together.
   useEffect(() => {
@@ -51,6 +51,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
               index={projects.indexOf(project)}
               delay={firstLoad ? i * 0.05 : 0}
               linkProps={rowProps(project.slug)}
+              effect={rowEffect(project)}
             />
           ))}
         </AnimatePresence>

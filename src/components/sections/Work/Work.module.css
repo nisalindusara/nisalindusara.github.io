@@ -40,6 +40,7 @@
 }
 
 .row {
+  position: relative; /* holds the water ball layer */
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 18rem);
   align-items: center;

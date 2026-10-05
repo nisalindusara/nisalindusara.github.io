@@ -15,11 +15,13 @@ type Props = {
   /** Stagger on first load only. */
   delay: number;
   linkProps: React.ComponentProps<"a">;
+  /** Cursor effect drawn inside the row (the water ball for projects without a preview). */
+  effect?: React.ReactNode;
 };
 
 // forwardRef: AnimatePresence's popLayout mode measures exiting rows.
 export const ProjectRow = forwardRef<HTMLLIElement, Props>(function ProjectRow(
-  { project, index, delay, linkProps },
+  { project, index, delay, linkProps, effect },
   ref,
 ) {
   return (
@@ -43,6 +45,7 @@ export const ProjectRow = forwardRef<HTMLLIElement, Props>(function ProjectRow(
             <Image src={project.preview} alt="" width={800} height={600} />
           </span>
         )}
+        {effect}
       </Link>
     </motion.li>
   );
