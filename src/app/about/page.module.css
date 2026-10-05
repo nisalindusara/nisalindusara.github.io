@@ -1,0 +1,8 @@
+/* Dark page, same colours as the rest of the dark site. */
+.page {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: clamp(120px, 14vw, 200px);
+  background: var(--bg);
+  color: var(--text);
+}

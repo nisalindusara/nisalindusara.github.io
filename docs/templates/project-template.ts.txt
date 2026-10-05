@@ -1,0 +1,58 @@
+// Copy this file to src/content/projects/<REPLACE: slug>.ts and fill every <REPLACE: ...>.
+// Then follow docs/projects.md, recipe "Add a project (with images)", from step 3.
+// Delete any optional field you do not use (the matching part of the site is then hidden).
+
+import type { Project } from "./types";
+
+// Export name: the slug in camelCase, e.g. slug "payments-api-design" -> paymentsApiDesign.
+export const <REPLACE: exportName>: Project = {
+  // URL /work/<slug>/ and the id used in src/content/views.ts. Lowercase letters, digits, hyphens.
+  slug: "<REPLACE: slug>",
+
+  // Home list row, /work row, project page heading and browser tab, "Next project" link.
+  title: "<REPLACE: Project title>",
+
+  // /work "Year" column, Year filter chip, project page "Year". Four digits, e.g. "2026".
+  year: "<REPLACE: 2026>",
+
+  // Project page "Role".
+  role: "<REPLACE: e.g. UI/UX design and development>",
+
+  // /work "Type" column, Type filter chip, project page "Type". Reuse an existing spelling exactly.
+  type: "<REPLACE: e.g. Web platform>",
+
+  // /work "Stack" column, Stack filter chips, project page "Stack". Reuse existing spellings exactly.
+  stack: ["<REPLACE: e.g. PHP>", "<REPLACE: e.g. MySQL>"],
+
+  // Optional. Home list row label on the right. Missing: `type` is shown instead.
+  category: "<REPLACE: e.g. Gym Management System>",
+
+  // Project page description for search engines and link previews, and /work search. One sentence.
+  summary: "<REPLACE: One sentence about the project.>",
+
+  // Project page "Live site" and "Repository" buttons. Use "" to hide a button.
+  links: { live: "<REPLACE: https://... or empty>", repo: "<REPLACE: https://... or empty>" },
+
+  // Optional. Full-width image on the project page. File: public/projects/<slug>/cover.jpg
+  cover: "/projects/<REPLACE: slug>/cover.jpg",
+
+  // Optional. Cursor bubble image and touch thumbnail in the lists. File: public/projects/<slug>/preview.jpg
+  preview: "/projects/<REPLACE: slug>/preview.jpg",
+
+  // Optional. Project page "Overview".
+  overview: "<REPLACE: Two or three sentences.>",
+
+  // Optional. Project page "What I built" (numbered list).
+  whatIBuilt: ["<REPLACE: First thing I built.>", "<REPLACE: Second thing I built.>"],
+
+  // Optional. Project page "Key decisions".
+  decisions: [
+    { title: "<REPLACE: Decision title>", body: "<REPLACE: One or two plain sentences.>" },
+  ],
+
+  // Optional. Project page "Outcome".
+  outcome: "<REPLACE: One sentence with the real result.>",
+
+  // Optional. Project page "Gallery". Files: public/projects/<slug>/gallery-1.jpg, gallery-2.jpg, ...
+  gallery: ["/projects/<REPLACE: slug>/gallery-1.jpg"],
+};

@@ -1,0 +1,35 @@
+.header {
+  padding-bottom: clamp(56px, 8vw, 120px);
+}
+
+.headline {
+  margin: clamp(48px, 9vw, 140px) 0 0;
+  font-size: clamp(2.25rem, 5.6vw, 6.5rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
+}
+
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.line {
+  display: block;
+}
+
+/* Offset from the left: about 1/6 of the viewport on desktop, flush left on mobile. */
+@media (min-width: 768px) {
+  .headline {
+    padding-left: 8vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .headline {
+    padding-left: calc(100vw / 6 - var(--pad));
+  }
+}

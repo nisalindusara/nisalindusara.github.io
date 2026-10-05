@@ -1,0 +1,21 @@
+/* Only on devices with a real mouse. */
+.dot {
+  display: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dot {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 18px;
+    height: 18px;
+    margin: -9px 0 0 -9px; /* centred on the cursor */
+    border-radius: 50%;
+    background: var(--accent);
+    pointer-events: none;
+    will-change: transform;
+  }
+}

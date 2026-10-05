@@ -1,0 +1,72 @@
+.hero {
+  position: relative;
+  min-height: 100svh;
+  background: var(--hero-bg);
+  color: var(--hero-text);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 96px;
+  /* + one radius: the About section overlaps the bottom of the hero by that much. */
+  padding-bottom: calc(40px + var(--radius));
+}
+
+.hero ::selection {
+  background: var(--hero-text);
+  color: var(--hero-bg);
+}
+
+/* The name row sits at the top of the hero (the hero content is pushed to the bottom). */
+.topBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+}
+
+.inner {
+  container-type: inline-size;
+  will-change: transform, opacity;
+}
+
+/*
+ * "NISAL" in Zodiak, spanning the full content width.
+ * --name-em is the width of the letters themselves (ink) per 1em of font size, measured in the
+ * browser; font-size = content width / --name-em. The negative margin removes the N's side bearing
+ * so the ink, not the glyph box, lines up with the page margin.
+ */
+.name {
+  --name-em: 3.07;
+  margin: 0 0 0 -0.042em;
+  font-family: var(--font-zodiak), Georgia, serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+  font-size: calc((100vw - 2 * var(--pad)) / var(--name-em));
+}
+
+@supports (font-size: 1cqi) {
+  .name {
+    font-size: calc(100cqi / var(--name-em));
+  }
+}
+
+.mask {
+  display: block;
+  overflow: hidden;
+  /* Room for the glyphs inside the mask without changing the line rhythm. */
+  padding: 0.04em 0 0.06em;
+  margin: -0.04em 0 -0.06em;
+}
+
+.line {
+  display: block;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-bottom: calc(24px + var(--radius));
+  }
+}

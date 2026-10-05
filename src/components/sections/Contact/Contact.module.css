@@ -1,0 +1,86 @@
+/* Light gray card with rounded top corners, under the dark top bar; near-black text. */
+.contact {
+  --ink: #0a0a0a;
+
+  border-radius: 32px 32px 0 0;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.contact ::selection {
+  background: var(--ink);
+  color: var(--surface);
+}
+
+/* Sized so the whole list fits on one screen under the top bar. */
+.inner {
+  padding-top: clamp(72px, 22vh, 260px);
+  padding-bottom: clamp(48px, 8vh, 96px);
+}
+
+/* Hairline across the content width, small label just under it. */
+.label {
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--ink);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.list {
+  margin-top: 16px;
+}
+
+/* Each line slides up from behind this mask. */
+.mask {
+  overflow: hidden;
+  line-height: 1.2;
+  /* 70px; slightly smaller only on narrow phones so "LinkedIn" plus its arrow still fits. */
+  font-size: min(70px, 17vw);
+}
+
+.link {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.12em;
+  min-height: 44px;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Arrow: 0.5em, its top on the cap height; comes in from the bottom-left on hover or focus. */
+.arrow {
+  flex: none;
+  width: 0.5em;
+  height: 0.5em;
+  margin-top: 0.18em;
+  opacity: 0;
+  transform: translate(-0.2em, 0.2em);
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+.link:hover .arrow,
+.link:focus-visible .arrow {
+  opacity: 1;
+  transform: none;
+}
+
+.link:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.12em;
+}
+
+/* No hover on touch screens: show the arrows all the time, quieter. */
+@media (hover: none) {
+  .arrow {
+    opacity: 0.4;
+    transform: none;
+  }
+}

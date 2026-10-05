@@ -1,0 +1,21 @@
+/* Same top offset and line height as the fixed nav links, so name and links sit on one line. */
+.top {
+  padding-top: var(--nav-top);
+}
+
+.name {
+  display: inline-block;
+  line-height: var(--nav-circle);
+  font-size: clamp(14px, 1.4vw, 20px);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+/* light: on a light page (dark text). dark: on a dark page (light text). */
+.light {
+  color: var(--hero-text);
+}
+
+.dark {
+  color: var(--text);
+}

@@ -1,0 +1,177 @@
+/* Columns: index | project | type | stack | year (| thumbnail on touch devices) */
+.columns,
+.row {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 12rem) minmax(0, 14rem) 4rem;
+  column-gap: 24px;
+}
+
+.columns {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--hair);
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.right {
+  text-align: right;
+}
+
+.item {
+  border-bottom: 1px solid var(--hair);
+}
+
+.row {
+  align-items: center;
+  min-height: clamp(104px, 11vw, 160px);
+  padding: 24px 0;
+  transition: opacity 300ms var(--ease-out);
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+
+.index {
+  font-size: var(--fs-small);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.title {
+  font-size: clamp(28px, 4.5vw, 64px);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  transition: transform 400ms var(--ease-out);
+}
+
+.type,
+.stack {
+  font-size: var(--fs-small);
+}
+
+.year {
+  font-size: var(--fs-small);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.thumb {
+  display: none;
+}
+
+.thumb img {
+  width: 100%;
+  height: auto;
+}
+
+/* Hover: the title nudges right and the other rows dim. */
+@media (hover: hover) {
+  .row:hover .title {
+    transform: translateX(12px);
+  }
+
+  .list:has(.row:hover) .row:not(:hover) {
+    opacity: 0.35;
+  }
+}
+
+/*
+ * Touch devices: no cursor bubble, so rows with a preview image show a thumbnail instead.
+ * The thumbnail column has a fixed width so rows with and without an image stay aligned.
+ */
+@media not ((hover: hover) and (pointer: fine)) {
+  .columns,
+  .row {
+    grid-template-columns: 4rem minmax(0, 1fr) minmax(0, 10rem) minmax(0, 12rem) 4rem 88px;
+  }
+
+  .thumb {
+    display: block;
+    width: 88px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+}
+
+/* Below 1024px: title and year on the first line, type and stack below. */
+@media (max-width: 1023px) {
+  .columns {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "title year thumb"
+      "type type thumb"
+      "stack stack thumb";
+    row-gap: 6px;
+    min-height: 0;
+    padding: 24px 0;
+  }
+
+  .index {
+    display: none;
+  }
+
+  .title {
+    grid-area: title;
+  }
+
+  .year {
+    grid-area: year;
+    align-self: baseline;
+  }
+
+  .type {
+    grid-area: type;
+    margin-top: 6px;
+  }
+
+  .stack {
+    grid-area: stack;
+    color: var(--muted);
+  }
+
+  .thumb {
+    grid-area: thumb;
+    width: 72px;
+    align-self: start;
+  }
+}
+
+/* Touch + narrow: reserve the thumbnail column on every row so the years line up. */
+@media (max-width: 1023px) and (hover: none), (max-width: 1023px) and (pointer: coarse) {
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto 72px;
+  }
+}
+
+.empty {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 48px 0;
+  border-bottom: 1px solid var(--hair);
+  font-size: var(--fs-lead);
+  letter-spacing: -0.02em;
+}
+
+.clear {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}

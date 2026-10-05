@@ -1,0 +1,186 @@
+.footer {
+  --footer-bg: var(--bg-soft);
+  --cta-bg: var(--accent);
+
+  position: relative;
+  background: var(--footer-bg);
+  color: #fff;
+}
+
+/* Set from JS once we know the footer fits in the viewport. */
+.footer[data-fixed="true"] {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+/* One full screen. dvh follows the mobile browser bars; svh/vh are fallbacks. */
+.inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  --cta-size: clamp(140px, 12vw, 230px);
+  padding: 0 var(--pad);
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 96px;
+}
+
+.top {
+  position: relative;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(3rem, 6.8vw, 8.5rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+/* Clips each line while it slides up; the extra bottom room keeps the "g" of "together" whole. */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+
+.firstLine,
+.secondLine {
+  display: block;
+}
+
+.avatar {
+  display: inline-block;
+  width: 0.78em;
+  height: 0.78em;
+  margin-right: 0.3em;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: -0.02em;
+}
+
+.arrow {
+  position: absolute;
+  right: 0;
+  bottom: 0.4em;
+  font-size: clamp(1.25rem, 1.6vw, 2rem);
+  line-height: 1;
+}
+
+/* The hairline with the round CTA sitting on it. */
+.rule {
+  position: relative;
+  margin-top: clamp(64px, 6vw, 104px);
+  /* Leave room for the lower half of the circle. */
+  margin-bottom: max(clamp(64px, 5vw, 92px), calc(var(--cta-size) / 2 + 24px));
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Positioned wrapper, centred on the line; it also carries the magnetic drift. */
+.ctaPos {
+  position: absolute;
+  right: 9%;
+  top: calc(var(--cta-size) / -2);
+}
+
+.cta {
+  display: grid;
+  place-items: center;
+  width: var(--cta-size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--cta-bg);
+  color: #fff;
+  font-size: clamp(1rem, 1.15vw, 1.375rem);
+  letter-spacing: -0.02em;
+  transition: transform 400ms var(--ease-out);
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.pill {
+  --fill: var(--accent);
+  --fill-text: #fff;
+  min-height: clamp(56px, 5vw, 96px);
+  padding: 0 clamp(24px, 3vw, 56px);
+  border-color: rgba(255, 255, 255, 0.2);
+  font-size: clamp(1rem, 1.15vw, 1.375rem);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  font-size: var(--fs-tiny);
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.toTop {
+  padding: 10px 0;
+  transition: color 300ms var(--ease-out);
+}
+
+@media (min-width: 768px) {
+  .inner {
+    padding: 0 8vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .inner {
+    padding: 0 16vw;
+  }
+}
+
+@media (hover: hover) {
+  .cta:hover {
+    transform: scale(1.06);
+  }
+
+  .toTop:hover {
+    color: #fff;
+  }
+}
+
+@media (max-width: 767px) {
+  .arrow {
+    display: none;
+  }
+
+  .ctaPos {
+    right: 0;
+  }
+
+  .rule {
+    margin-top: 96px;
+  }
+
+  .buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pill {
+    width: 100%;
+    justify-content: center;
+  }
+}

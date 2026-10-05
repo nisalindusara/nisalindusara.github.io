@@ -1,0 +1,14 @@
+/* Dark top bar (name + nav) with the light gray Contact card under it; exactly one screen tall. */
+.page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-deep);
+  color: var(--text);
+}
+
+/* The card fills the rest of the screen. */
+.page > :last-child {
+  flex: 1;
+}

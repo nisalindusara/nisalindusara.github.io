@@ -1,0 +1,254 @@
+:root {
+  --bg: #0a0a0a;
+  --bg-deep: #000;
+  --text: #e6e6e3;
+  --text-muted: rgba(230, 230, 227, 0.56);
+  --surface: #d9d9d6;
+  --line: rgba(230, 230, 227, 0.2);
+  --bg-soft: #1c1d20; /* footer and menu */
+  --accent: #455ce9; /* round "View", "Get in touch" and menu close buttons */
+  --cursor-blue: #2b4bff; /* cursor bubble for projects without a preview image */
+
+  /* Light hero. The only place these colours are defined. */
+  --hero-bg: #f4f4f1;
+  --hero-text: #0a0a0a;
+
+  --pad: 40px;
+  --radius: 28px;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --fs-tiny: 0.75rem;
+  --fs-small: 0.875rem;
+  --fs-body: 1.0625rem;
+  --fs-lead: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+  --fs-h2: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+  --fs-statement: clamp(1.875rem, 1rem + 3.4vw, 4.25rem);
+
+  /* Fixed nav: the menu circle and the overlay close button share these. */
+  --nav-top: 28px;
+  --nav-circle: 72px;
+
+  /* About page photos: switch to colour by changing this one value (e.g. "none"). */
+  --about-image-filter: grayscale(1) contrast(1.05);
+
+  /* Set by the footer (ResizeObserver) so the page can reveal it. */
+  --footer-h: 0px;
+
+  color-scheme: dark;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --pad: 20px;
+    --radius: 20px;
+    --nav-top: 16px;
+    --nav-circle: 56px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg-deep);
+  /* Keep the scrollbar space when the menu locks scrolling, so fixed elements don't shift. */
+  scrollbar-gutter: stable;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+::selection {
+  background: var(--text);
+  color: var(--bg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* ---- Layout helpers ---- */
+
+/* The page content slides over the fixed footer. */
+.page {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  background: var(--bg);
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: var(--footer-h);
+  overflow: clip; /* keeps the rounded corners over the white Work section */
+}
+
+.container {
+  padding-left: var(--pad);
+  padding-right: var(--pad);
+}
+
+.label {
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.display {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  background: var(--text);
+  color: var(--bg);
+  border-radius: 999px;
+  font-size: var(--fs-small);
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* Sections focused programmatically after an anchor scroll. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/*
+ * Hover fill: a circle rises from the bottom edge and fills the element, then drops back on leave.
+ * Set --fill (fill colour) and --fill-text (text colour while filled) on the element.
+ */
+.fill-hover {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  transition:
+    color 400ms var(--ease-out),
+    border-color 400ms var(--ease-out);
+}
+
+.fill-hover::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -25%;
+  top: 100%;
+  width: 150%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--fill, currentColor);
+  transition:
+    top 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+}
+
+@media (hover: hover) {
+  .fill-hover.fill-hover:hover {
+    color: var(--fill-text, inherit);
+    border-color: var(--fill, currentColor);
+  }
+
+  .fill-hover:hover::before {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.fill-hover.fill-hover:focus-visible {
+  color: var(--fill-text, inherit);
+}
+
+.fill-hover:focus-visible::before {
+  top: 50%;
+  transform: translateY(-50%);
+}

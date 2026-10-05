@@ -1,0 +1,56 @@
+/* Slides over the hero as the page scrolls. */
+.about {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-deep);
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  /* Overlap the light hero by one radius so it shows behind the rounded corners. */
+  margin-top: calc(-1 * var(--radius));
+  padding-top: clamp(96px, 11.5vw, 220px);
+  padding-bottom: clamp(96px, 8vw, 160px);
+}
+
+/* Hairline across the full content width, statement directly beneath it. */
+.statement {
+  border-top: 1px solid rgba(230, 230, 227, 0.6);
+  padding-top: 0.35em;
+  /* Keep lines around 18.5em long (as in the reference) while the hairline stays full width. */
+  padding-right: max(0px, calc(100% - 18.5em));
+  font-family: var(--font-nimbus), "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: clamp(2rem, 4.25vw, 6rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+/* "More about me": small link with the thin arrow, which nudges up-right on hover. */
+.more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  min-height: 44px;
+  margin-top: clamp(32px, 4vw, 56px);
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+}
+
+.arrow {
+  width: 0.75em;
+  height: 0.75em;
+  transition: transform 300ms var(--ease-out);
+}
+
+.more:focus-visible {
+  outline: none;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+@media (hover: hover) {
+  .more:hover .arrow {
+    transform: translate(3px, -3px);
+  }
+}

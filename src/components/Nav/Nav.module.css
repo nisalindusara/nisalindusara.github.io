@@ -1,0 +1,152 @@
+/* ---- Top-right links: plain colours, set per page (they only show over the page's top row) ---- */
+
+.bar,
+.circleBar {
+  position: fixed;
+  top: var(--nav-top);
+  right: var(--pad);
+  z-index: 60;
+  pointer-events: none;
+}
+
+.onLight {
+  color: var(--hero-text);
+}
+
+.onDark {
+  color: var(--text);
+}
+
+.links,
+.circle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  pointer-events: auto;
+}
+
+.links ul {
+  display: flex;
+  gap: clamp(28px, 4vw, 58px);
+}
+
+.link {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  min-width: 44px; /* tap target */
+  text-align: center;
+  /* Vertically centred on the menu circle that replaces these links. */
+  line-height: var(--nav-circle);
+  font-size: 1em;
+  font-weight: 300;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  transition: color 300ms var(--ease-out);
+}
+
+/* Hover: a blue circle grows behind the label, text turns white. */
+.link::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 50%;
+  width: var(--nav-circle);
+  height: var(--nav-circle);
+  margin: calc(var(--nav-circle) / -2) 0 0 calc(var(--nav-circle) / -2);
+  border-radius: 50%;
+  background: var(--accent);
+  transform: scale(0);
+  transition: transform 350ms var(--ease-out);
+}
+
+.link:focus-visible {
+  outline: none;
+  color: #fff;
+}
+
+.link:focus-visible::before {
+  transform: scale(1);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: #fff;
+  }
+
+  .link:hover::before {
+    transform: scale(1);
+  }
+}
+
+/* Small dot under the current page's link. */
+.link[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 0.85em);
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---- Menu circle: floats over light and dark sections, so it inverts what is behind it ---- */
+
+.circleBar {
+  color: #fff;
+  mix-blend-mode: difference;
+}
+
+/* While hovered the blend is off, so the fill shows as the real blue. */
+.circleBar:has(.circle:hover),
+.circleBar:has(.circle:focus-visible) {
+  mix-blend-mode: normal;
+}
+
+.circle {
+  --fill: var(--accent);
+  --fill-text: #fff;
+  display: grid;
+  place-items: center;
+  width: var(--nav-circle);
+  height: var(--nav-circle);
+  padding: 0;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Leaving: drop the fill at once (the blend comes back at the same moment, which would tint a lingering fill). */
+.circle:not(:hover):not(:focus-visible)::before {
+  transition-duration: 0s;
+}
+
+.lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lines span {
+  display: block;
+  width: 26px;
+  height: 1px;
+  background: currentColor;
+}
+
+.circleBar :focus-visible {
+  outline-color: #fff;
+}
+
+/* Phones: no top-right links (the menu circle is always shown, see useIsMobile in Nav.tsx).
+   Hidden in CSS too, so the links never flash before the page script runs. */
+@media (max-width: 767px) {
+  .bar {
+    display: none;
+  }
+}

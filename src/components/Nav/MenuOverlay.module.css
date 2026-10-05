@@ -1,0 +1,152 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--nav-top) + var(--nav-circle) + 24px) var(--pad) 40px;
+  background: var(--bg-soft);
+  color: #fff;
+  overflow-y: auto;
+}
+
+/* Same place and size as the menu circle it replaces. */
+.close {
+  position: fixed;
+  top: var(--nav-top);
+  right: var(--pad);
+  display: grid;
+  place-items: center;
+  width: var(--nav-circle);
+  height: var(--nav-circle);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 400ms var(--ease-out);
+}
+
+/* Two lines stacked on the same spot; each rotates 45 degrees to form an X. */
+.lines {
+  position: relative;
+  width: 26px;
+  height: 1px;
+}
+
+.lines span {
+  position: absolute;
+  inset: 0;
+  background: currentColor;
+}
+
+/* Content column: room on the left for the dot, aligned with the footer's indent. */
+.nav {
+  width: 100%;
+  padding-left: 40px;
+}
+
+.heading {
+  padding-bottom: 28px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: var(--fs-tiny);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.dot {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.label {
+  display: block;
+  font-size: 70px;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+/* Rolling letters: each letter is clipped; on hover it moves up and its copy (::after) follows. */
+.roll {
+  display: block;
+  white-space: nowrap;
+}
+
+.char {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.charInner {
+  position: relative;
+  display: inline-block;
+  transition: transform 550ms var(--ease-out);
+  transition-delay: calc(var(--i) * 25ms);
+}
+
+.charInner::after {
+  content: attr(data-char);
+  position: absolute;
+  left: 0;
+  top: 100%;
+}
+
+.link:hover .charInner,
+.link:focus-visible .charInner {
+  transform: translateY(-100%);
+}
+
+.link:focus-visible {
+  outline-color: #fff;
+}
+
+@media (hover: hover) {
+  .close:hover {
+    transform: scale(1.06);
+  }
+}
+
+@media (min-width: 768px) {
+  .nav {
+    padding-left: 8vw;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    padding-left: 16vw;
+  }
+}

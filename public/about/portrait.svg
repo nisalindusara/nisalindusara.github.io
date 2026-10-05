@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500">
+  <!-- SAMPLE: replace with a real photo -->
+  <rect width="1200" height="1500" fill="#8a8a87"/>
+  <rect x="60" y="75" width="1080" height="1350" fill="none" stroke="#a3a3a0" stroke-width="2"/>
+  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" fill="#d9d9d6" font-family="Inter, Arial, sans-serif" font-size="72" letter-spacing="6">SAMPLE PHOTO</text>
+</svg>

@@ -1,0 +1,22 @@
+/* Light page: same colours as the home hero. Children use --ink, --paper, --hair and --muted. */
+.page {
+  --ink: var(--hero-text);
+  --paper: var(--hero-bg);
+  --hair: color-mix(in srgb, var(--ink) 15%, transparent);
+  --muted: color-mix(in srgb, var(--ink) 55%, transparent);
+
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-bottom: clamp(96px, 12vw, 160px);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.page ::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.page :focus-visible {
+  outline-color: var(--ink);
+}
