@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { EASE_OUT } from "@/components/ui/motion";
 import {
@@ -23,7 +23,7 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a);
 const clampAbs = (v: number, max: number) => Math.max(-max, Math.min(max, v));
 
 /** The word as one inline-block span per letter, plus the ®. Base and bands share it, so they line up exactly. */
-function Letters({ word, letter }: { word: string; letter?: (i: number) => object }) {
+export function Letters({ word, letter }: { word: string; letter?: (i: number) => object }) {
   return (
     <>
       {Array.from(word).map((ch, i) =>
@@ -48,17 +48,37 @@ function Letters({ word, letter }: { word: string; letter?: (i: number) => objec
  * band, hidden at rest. Moving the pointer shows the bands near it, clipped to a short window around the
  * pointer and shifted sideways by the pointer's speed; each copy has the hero background, so it covers
  * the letters under it. The bands settle back when the pointer stops. Settings: heroConfig.ts.
+ * `hostRef`: the element that receives the pointer (the stage, whose click button covers the word).
+ * `interactive`: false while the photo shows or a reveal runs (no hover effect). `hidden`: the photo covers it.
  */
-export function Wordmark({ word, play }: { word: string; play: boolean }) {
+export function Wordmark({
+  word,
+  play,
+  hostRef,
+  interactive,
+  hidden,
+}: {
+  word: string;
+  play: boolean;
+  hostRef: RefObject<HTMLElement | null>;
+  interactive: boolean;
+  hidden: boolean;
+}) {
   const reduce = useReducedMotion();
   const wrapRef = useRef<HTMLSpanElement>(null);
+  // Read inside the pointer handlers without re-binding them.
+  const interactiveRef = useRef(interactive);
+  useEffect(() => {
+    interactiveRef.current = interactive;
+  }, [interactive]);
   const bandRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const innerRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     if (!SLICE_ENABLED || reduce) return;
     const wrap = wrapRef.current;
-    if (!wrap) return;
+    const host = hostRef.current;
+    if (!wrap || !host) return;
     const fine = window.matchMedia("(hover: hover) and (pointer: fine)");
     const n = SLICE_COUNT;
     const bands = bandRefs.current;
@@ -121,6 +141,10 @@ export function Wordmark({ word, play }: { word: string; play: boolean }) {
 
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse" || !fine.matches) return;
+      if (!interactiveRef.current) {
+        inside = false;
+        return;
+      }
       const rect = wrap.getBoundingClientRect();
       w = rect.width;
       h = rect.height;
@@ -137,14 +161,14 @@ export function Wordmark({ word, play }: { word: string; play: boolean }) {
       last = null;
     };
 
-    wrap.addEventListener("pointermove", onMove);
-    wrap.addEventListener("pointerleave", onLeave);
+    host.addEventListener("pointermove", onMove);
+    host.addEventListener("pointerleave", onLeave);
     return () => {
-      wrap.removeEventListener("pointermove", onMove);
-      wrap.removeEventListener("pointerleave", onLeave);
+      host.removeEventListener("pointermove", onMove);
+      host.removeEventListener("pointerleave", onLeave);
       cancelAnimationFrame(frame);
     };
-  }, [reduce]);
+  }, [reduce, hostRef]);
 
   /** Entrance of one letter: slides up from below. Reduced motion: a fade. */
   const letter = (i: number) => {
@@ -159,7 +183,13 @@ export function Wordmark({ word, play }: { word: string; play: boolean }) {
 
   return (
     // A span (display: block in CSS): it sits inside the <h1>.
-    <span ref={wrapRef} className={styles.wordmark} aria-hidden="true">
+    <span
+      ref={wrapRef}
+      className={styles.wordmark}
+      aria-hidden="true"
+      // Opacity, not visibility: hover bands set their own visibility and would show through.
+      style={hidden ? { opacity: 0 } : undefined}
+    >
       <span className={styles.mask}>
         <Letters word={word} letter={letter} />
       </span>

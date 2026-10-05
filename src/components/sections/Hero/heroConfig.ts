@@ -29,3 +29,20 @@ export const SLICE_SHUFFLE_MS = 110;
 export const SLICE_FOLLOW = 0.28;
 /** Share of the pointer speed kept each frame after the pointer stops (0 to 1). Higher = longer settle. */
 export const SLICE_DECAY = 0.88;
+
+/*
+ * Click reveal. Clicking (or tapping) the wordmark breaks it apart from the click point outward in a
+ * growing circle of bands, revealing the photo underneath; clicking the photo does the same back to the
+ * wordmark. Each band shows the new side inside the circle, with ragged, sideways-shifted edges that
+ * settle as the circle grows.
+ */
+/** Duration of one reveal, ms (ease-in-out). */
+export const REVEAL_MS = 1100;
+/** Number of horizontal bands in the reveal. More = finer steps on the circle's edge. */
+export const REVEAL_BANDS = 18;
+/** Largest sideways shift of a band's content at the start, px; it shrinks to 0 by the end. */
+export const REVEAL_SHIFT_PX = 90;
+/** Random extra or missing width at each band's edge at the start, px; it shrinks to 0 by the end. */
+export const REVEAL_JITTER_PX = 70;
+/** Each band picks a new shift and edge this often while revealing, ms. Lower = more jitter. */
+export const REVEAL_SHUFFLE_MS = 70;

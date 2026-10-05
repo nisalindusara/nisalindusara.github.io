@@ -120,6 +120,71 @@
   will-change: transform;
 }
 
+/* ---- Click reveal (HeroStage.tsx): wordmark and photo share the box of the wordmark ---- */
+
+.stage {
+  position: relative;
+}
+
+/* The photo fills the wordmark's box, cropped to fit. */
+.photo,
+.revealPhoto {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: var(--radius);
+}
+
+.stage[data-side="word"] .photo {
+  visibility: hidden;
+}
+
+.photoImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* One reveal band: both sides on the hero background; the stage's data-target picks the one shown. */
+.revealBand {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+  background: var(--hero-bg);
+  pointer-events: none;
+  will-change: clip-path;
+}
+
+.revealInner {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.stage[data-target="photo"] .revealWord,
+.stage[data-target="word"] .revealPhoto,
+.stage:not([data-target]) .revealInner {
+  display: none;
+}
+
+/* Transparent click target over the whole box. */
+.stageButton {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
+  cursor: pointer;
+}
+
+.stageButton:focus-visible {
+  outline: 2px solid var(--hero-text);
+  outline-offset: 6px;
+}
+
 @media (max-width: 767px) {
   .hero {
     padding-bottom: calc(24px + var(--radius));

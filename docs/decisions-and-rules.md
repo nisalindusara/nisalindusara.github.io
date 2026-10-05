@@ -34,6 +34,7 @@ Time: about 5 minutes to read.
 | Entrance animations wait for `pageReady` (`useReveal`) | Otherwise they would play underneath the panel and be finished when it lifts. |
 | The home hero is one full-width wordmark, "nisal®" | A single word filling the screen is the boldest way to say whose site it is, and it leaves the work directly below. The ® treats the name as a brand, matching the logo. The `<h1>` holds the full name for screen readers. |
 | The wordmark uses Urbanist 700, not Inter | Its single-storey "a", circular "o" and round dots read as a logotype at this size; Inter stays for all other text. It is a Google font loaded with `next/font`, so it adds no package. |
+| A click on the wordmark reveals a photo, with the slice look spreading from the click point | The hover effect hints that the word can break apart; the click follows through and shows the person behind the name. Reusing the bands keeps one visual language and needs no image effects library. |
 | The hover effect is DOM bands with `clip-path`, not WebGL or a canvas | The rest state is real, crisp text that needs no script; the effect only adds hidden copies of the word. No new library, no 3D. |
 | The logo is an N, I and P monogram with a blue dot | One shape carries all three initials (the N's right stem is the I and the P's stem). The blue dot is a full stop in the same `--cursor-blue` as the cursor dot and the ball on project rows, so the mark ties the site's blue together. It is an inline SVG in `currentColor`, so one file works on light and dark pages. |
 | The top left swaps between the logo and "Nisal Indusara" | The logo alone does not say whose site it is; the name alone is not a mark. Taking turns teaches the visitor that the mark means the name. |
@@ -61,6 +62,10 @@ Time: about 5 minutes to read.
 - `profile.tagline` is not shown on any page; it lives on in `public/og.png` and `profile.siteDescription`.
 - The hero wordmark breaks apart only while the mouse moves over it; a still pointer leaves it whole. Phones, tablets and reduced motion get no effect.
 - The hero is not a full screen tall: it ends below the wordmark, and the About section follows directly.
+- The hero photo has no hover effect; only the wordmark breaks apart on hover. Clicks during a reveal are ignored until it ends.
+- The hero photo is cropped to the wordmark's box (about 2.3:1), not shown at its own shape.
+- The hero always opens on the wordmark, also after visiting another page; the photo is never remembered.
+- With the keyboard (Enter on the wordmark button) the reveal starts from the centre, as there is no click point.
 - The role line in the hero's top row shows only from 1024px wide; below that the row holds the logo and the menu circle.
 - Text in the home hero cannot be selected: dragging across the wordmark highlights nothing. Screen readers still read the full name.
 - The top-left logo and name keep swapping while the visitor reads; the swap stops only while the pointer is on it, it has keyboard focus, or the tab is hidden.

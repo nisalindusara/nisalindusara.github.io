@@ -19,6 +19,7 @@ Run these after changing anything in `src/components/transition/`, `src/content/
 
 - [ ] First visit: in a private window, the name shows on a dark panel, its letters pulse, then the panel lifts, the letters of the "nisal" wordmark slide up one by one.
 - [ ] Home hero wordmark: moving the mouse across it breaks the letters near the pointer into sideways-shifted bands; they settle back when the mouse stops. The word runs from the left page margin to the right one with no horizontal scrollbar, at 1440px and at 375px.
+- [ ] Home hero click: clicking a point on the wordmark breaks it apart from that point outward and reveals the photo; clicking the photo does the same back to the wordmark. On a phone a tap does the same. Tab to the wordmark and press Enter: the reveal starts from the centre.
 - [ ] Refresh: no intro.
 - [ ] New tab (same site, typed address): the intro plays again.
 - [ ] Clicking Work, About, Contact, a project row, "All work", "More about me" and "Next project": the panel rises, shows the right label, and lifts on the new page at its top.

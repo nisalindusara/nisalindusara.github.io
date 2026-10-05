@@ -100,6 +100,28 @@ Slice effect (mouse only, from `heroConfig.ts`): the word is cut into `SLICE_COU
 
 The effect runs only on devices with hover and a fine pointer, and not with reduced motion. Its animation loop runs only while bands are moving and stops by itself.
 
+### Click reveal: wordmark and photo
+
+`src/components/sections/Hero/HeroStage.tsx`. The wordmark and a photo (`profile.heroImage`) take turns in the same box: the box of the wordmark, about 2.3:1, with rounded corners (`--radius`). The hero always opens on the wordmark.
+
+- Click or tap the wordmark: a circle grows from the click point until it covers the box, in `REVEAL_MS`. Inside it the photo shows, cut into `REVEAL_BANDS` horizontal bands. Each band's edge is ragged and its content is shifted sideways; both shrink to nothing as the circle grows, so the photo settles whole.
+- Click or tap the photo: the same, back to the wordmark.
+- Keyboard: the box is one button (Tab to it). Enter or Space runs the reveal from the centre. Screen readers hear "Show photo" or "Show name".
+- The hover slice effect runs only while the wordmark shows and no reveal is running. Clicks during a reveal are ignored.
+- Reduced motion: the click swaps at once.
+
+| Setting (`heroConfig.ts`) | Default | What it changes |
+|---|---|---|
+| `REVEAL_MS` | `1100` | ms one reveal takes (ease-in-out); lower is faster |
+| `REVEAL_BANDS` | `18` | Number of horizontal bands; more give finer steps on the circle's edge |
+| `REVEAL_SHIFT_PX` | `90` | Largest sideways shift of a band's content at the start, px |
+| `REVEAL_JITTER_PX` | `70` | Largest ragged extra or missing width at a band's edge at the start, px |
+| `REVEAL_SHUFFLE_MS` | `70` | ms between new shifts and edges while revealing; lower is more jittery |
+
+Replace the photo: [media.md](media.md#replace-the-hero-photo).
+
+Turn the click reveal off: in `src/components/sections/Hero/HeroStage.tsx`, delete the `<button ... />` at the end of the returned markup. The wordmark then stays, with its hover effect.
+
 ### Change the hero word
 
 The wordmark fills the width because its font size is the content width divided by `--word-em` in `src/components/sections/Hero/Hero.module.css`: the ink width of the word plus the ® per 1em of font size. For "nisal" in Urbanist 700 it is `2.03`.
@@ -183,7 +205,7 @@ When the visitor's system has "reduce motion" turned on:
 - `src/app/globals.css` sets every CSS transition and animation to 0.01ms.
 - About images show at once, without clip-path or parallax (`RevealImage.tsx`).
 - The fullscreen menu fades instead of the circle reveal (`MenuOverlay.tsx`).
-- Home hero: the wordmark's letters fade in instead of sliding up, and the slice effect is off.
+- Home hero: the wordmark's letters fade in instead of sliding up, the slice effect is off, and a click swaps wordmark and photo at once.
 - Top left: the logo stays; it does not swap with the name and does not draw itself in.
 - Cursor bubble and dot follow the mouse without a spring; magnetic hover is off.
 - The water ball has no film, droplets or goo: it fades in at the pointer in 150ms, follows it, and fades out in 150ms.

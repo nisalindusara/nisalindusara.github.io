@@ -31,6 +31,8 @@ Time: about 5 minutes per change.
 |---|---|---|---|
 | Hero wordmark, full width (the page's only `<h1>`) | nisal® | `src/content/profile.ts` | `profile.heroWord` (the ® is added by `src/components/sections/Hero/Wordmark.tsx`) |
 | Hero wordmark, for screen readers | Nisal Indusara Paranawithana | `src/content/profile.ts` | `profile.fullName` |
+| Hero photo (click or tap the wordmark) | gray SAMPLE PHOTO placeholder | `src/content/profile.ts` + `public/hero/photo.svg` | `profile.heroImage.src`, `profile.heroImage.alt` ([replace it](media.md#replace-the-hero-photo)) |
+| Screen-reader label of the wordmark/photo button | Show photo / Show name | `src/components/sections/Hero/HeroStage.tsx` | component |
 | Hero top row, small line (1024px and wider) | design, planning and code | `src/content/profile.ts` | `profile.heroRole` |
 | About statement | I like the moment... | `src/content/profile.ts` | `profile.about` |
 | About link | More about me | `src/content/about.ts` | `about.moreLink` |

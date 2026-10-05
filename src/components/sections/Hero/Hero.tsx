@@ -5,7 +5,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { profile } from "@/content/profile";
 import { useReveal } from "@/components/ui/useReveal";
 import { TopBar } from "@/components/TopBar/TopBar";
-import { Wordmark } from "./Wordmark";
+import { HeroStage } from "./HeroStage";
 import styles from "./Hero.module.css";
 
 export function Hero() {
@@ -27,11 +27,8 @@ export function Hero() {
       </div>
 
       <motion.div className={`container ${styles.inner}`} style={reduce ? undefined : { y, opacity }}>
-        {/* The page's only <h1>. Screen readers get the full name; the wordmark is decoration. */}
-        <h1 className={styles.title}>
-          <span className="visually-hidden">{profile.fullName}</span>
-          <Wordmark word={profile.heroWord} play={play} />
-        </h1>
+        {/* Wordmark (the page's only <h1>) and photo; a click swaps them. */}
+        <HeroStage play={play} />
       </motion.div>
     </section>
   );

@@ -19,6 +19,11 @@ export const profile = {
   tagline,
   // Home hero wordmark, shown lowercase across the full width with a ® after it. One short word.
   heroWord: "nisal",
+  // Home hero photo: clicking the wordmark reveals it in the wordmark's place (wide, cropped to fit).
+  heroImage: {
+    src: "/hero/photo.svg", // SAMPLE: replace with a real photo (wide image, e.g. public/hero/photo.jpg)
+    alt: "Photo of Nisal Indusara Paranawithana",
+  },
   // Small line in the home hero's top row (1024px and wider), next to the logo.
   heroRole: "design, planning and code", // SAMPLE: replace
   about:

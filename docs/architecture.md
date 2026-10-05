@@ -54,7 +54,7 @@ Every page also gets `src/app/layout.tsx`: fonts, metadata defaults from `profil
 | Footer (sticky reveal) | `src/components/sections/Footer/Footer.tsx` | every page, from `layout.tsx` |
 | Contact section | `src/components/sections/Contact/Contact.tsx` | /contact/ only |
 | Project list for /work | `src/components/work/ProjectList.tsx`, `ProjectRow.tsx`, `WorkFilters.tsx`, `filters.ts` | /work/ |
-| Home hero (top row, full-width wordmark with the slice effect) | `src/components/sections/Hero/Hero.tsx`, `Wordmark.tsx`, settings in `heroConfig.ts` | / |
+| Home hero (top row, full-width wordmark with the slice effect, click reveal of the photo) | `src/components/sections/Hero/Hero.tsx`, `HeroStage.tsx` (wordmark and photo, click reveal), `Wordmark.tsx` (letters, hover slice), settings in `heroConfig.ts` | / |
 | Project list for the home page | `src/components/sections/Work/Work.tsx` | / |
 | Cursor preview (decides per row: image card, or water ball) | `src/components/CursorPreview/CursorPreview.tsx` | home list, /work list, "Next project" |
 | Water ball ("View" / "Next project" on rows without a `preview`) | `src/components/work/WaterBall.tsx`, settings in `src/components/work/waterConfig.ts` | rendered inside each such row by `rowEffect(project)` from the cursor preview |

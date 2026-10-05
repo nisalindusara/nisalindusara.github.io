@@ -13,6 +13,7 @@ Find every marker in VS Code: press Ctrl+Shift+F, type `SAMPLE`, set "files to i
 | `src/content/profile.ts` + `public/cv.pdf` | `cv` | `/cv.pdf` (placeholder PDF) | keep the path, replace the file ([media.md](media.md#replace-the-cv)) | [ ] |
 | `src/content/profile.ts` + `public/avatar.svg` | `avatar` | `/avatar.svg` (gray silhouette) | a square photo ([media.md](media.md#replace-the-footer-avatar)) | [ ] |
 | `src/content/profile.ts` | `siteUrl` | `https://nisal-sample.github.io` | `https://YOUR-USERNAME.github.io` | [ ] |
+| `src/content/profile.ts` + `public/hero/photo.svg` | `heroImage.src` | `/hero/photo.svg` (gray SAMPLE PHOTO) | a wide photo, 2400 x 1040 ([media.md](media.md#replace-the-hero-photo)) | [ ] |
 | `src/content/profile.ts` | `heroRole` | design, planning and code | a few words on what you do, shown in the home hero's top row | [ ] |
 | `src/content/about.ts` | `statement` | I care about the quiet parts of software... | your own statement, or keep it | [ ] |
 | `src/content/about.ts` | `body` | I work across design, planning and code... | one short paragraph, or keep it | [ ] |

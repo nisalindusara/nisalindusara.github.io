@@ -14,6 +14,7 @@ Time: about 10 minutes per image.
 | About wide | `public/about/` | `wide.jpg` | 2100 x 900 (21:9) | 500 KB | JPG | `src/content/about.ts`, `images.wide` |
 | About detail 1 | `public/about/` | `detail-1.jpg` | 1200 x 900 (4:3) | 300 KB | JPG | `src/content/about.ts`, `images.detailOne` |
 | About detail 2 | `public/about/` | `detail-2.jpg` | 1200 x 900 (4:3) | 300 KB | JPG | `src/content/about.ts`, `images.detailTwo` |
+| Home hero photo (shown by clicking the wordmark) | `public/hero/` | `photo.jpg` | 2400 x 1040 (about 2.3:1) | 400 KB | JPG or WebP | `src/content/profile.ts`, `heroImage.src` and `heroImage.alt` |
 | Footer avatar | `public/` | `avatar.jpg` | 400 x 400 (1:1) | 80 KB | JPG | `src/content/profile.ts`, `avatar` |
 | CV | `public/` | `cv.pdf` | | 2 MB | PDF | `src/content/profile.ts`, `cv` |
 | Favicon | `src/app/` | `icon.svg` | 32 x 32 view box | 5 KB | SVG | Next.js file convention, no field |
@@ -132,6 +133,28 @@ Steps:
 Done when: `out/icon.svg` and `out/og.png` are the new files. Link previews on LinkedIn or WhatsApp update only after those services refresh their cache; LinkedIn's Post Inspector (https://www.linkedin.com/post-inspector/) forces a refresh.
 
 If it fails: [troubleshooting: deployed site shows old content](troubleshooting.md#t-old-content).
+
+## Replace the hero photo
+
+Goal: your photo in the home hero. Clicking (or tapping) the "nisal®" wordmark reveals it in the wordmark's place; clicking the photo brings the wordmark back.
+
+Files to edit: `src/content/profile.ts`, `public/hero/`
+
+The photo fills the box the wordmark takes up. That box is always about 2.3 times as wide as it is tall (about 1345 x 583 px on a 1440px-wide screen, 335 x 145 px on a phone), with rounded corners. A photo with another shape is cropped to fit from the centre (`object-fit: cover`), so nothing is stretched.
+
+Steps:
+
+1. Crop the photo to 2400 x 1040 (2.3:1). Keep the subject in the middle: on phones the photo is small, and a crop at another ratio cuts the edges first.
+2. Compress it to 400 KB or less ([Compress an image](#compress-an-image)).
+3. Save it as `public/hero/photo.jpg`. Lowercase name and extension.
+4. In `src/content/profile.ts`, in the `heroImage` block, change `src: "/hero/photo.svg",` to `src: "/hero/photo.jpg",` and delete the `// SAMPLE` comment on that line.
+5. Check `alt` in the same block: it describes the photo for screen readers. Change it if "Photo of Nisal Indusara Paranawithana" does not describe your photo.
+6. Delete `public/hero/photo.svg`.
+7. Run `npm run dev`, open http://localhost:3000/ and click the wordmark.
+
+Done when: the click reveals your photo, with no gray "SAMPLE PHOTO" placeholder, at full width and at 375px wide.
+
+If it fails: [troubleshooting: image does not show](troubleshooting.md#t-image-case).
 
 ## Replace the footer avatar
 
