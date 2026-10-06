@@ -31,7 +31,7 @@ export const profile = {
   closingLine: "Let’s work together",
   contactCta: "Get in touch",
   avatar: "/avatar.svg", // SAMPLE: replace with a real photo (square image, e.g. public/avatar.jpg)
-  email: "nisal@example.com", // SAMPLE: replace
+  email: "paranawithananisal19@gmail.com",
   github: "https://github.com/nisal-sample", // SAMPLE: replace
   linkedin: "https://www.linkedin.com/in/nisal-sample", // SAMPLE: replace
   cv: "/cv.pdf", // SAMPLE: replace (placeholder file in public/cv.pdf)

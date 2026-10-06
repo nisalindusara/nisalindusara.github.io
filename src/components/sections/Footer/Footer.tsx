@@ -125,7 +125,7 @@ export function Footer() {
             <li>
               <Magnetic block>
                 <Button href={`mailto:${profile.email}`} className={`fill-hover ${styles.pill}`}>
-                  {profile.email}
+                  Email
                 </Button>
               </Magnetic>
             </li>

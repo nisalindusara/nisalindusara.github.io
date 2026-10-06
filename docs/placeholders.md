@@ -7,7 +7,7 @@ Find every marker in VS Code: press Ctrl+Shift+F, type `SAMPLE`, set "files to i
 
 | File | Field | Current value | What to put there | Done |
 |---|---|---|---|---|
-| `src/content/profile.ts` | `email` | `nisal@example.com` | your real email | [ ] |
+| `src/content/profile.ts` | `email` | `paranawithananisal19@gmail.com` | your real email | [x] |
 | `src/content/profile.ts` | `github` | `https://github.com/nisal-sample` | your GitHub profile URL | [ ] |
 | `src/content/profile.ts` | `linkedin` | `https://www.linkedin.com/in/nisal-sample` | your LinkedIn profile URL | [ ] |
 | `src/content/profile.ts` + `public/cv.pdf` | `cv` | `/cv.pdf` (placeholder PDF) | keep the path, replace the file ([media.md](media.md#replace-the-cv)) | [ ] |
